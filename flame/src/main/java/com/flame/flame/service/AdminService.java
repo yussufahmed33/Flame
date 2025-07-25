@@ -13,8 +13,8 @@ public class AdminService {
     @Autowired
     ProductRepository productRepository;
 public void addproduct(ProductModel productModel, Principal principal){
-    UserModel user = productModel.g();
-    productModel.setUser(user);
-    productRepository.save(productModel);
+    // UserModel user = productModel.g();
+    // productModel.setUser(user);
+    // productRepository.save(productModel);
 }
 }
