@@ -19,12 +19,8 @@ private double price;
 private String image;
 private int quantity;
 private String category;
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "user_products",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "product_id")
-    )
-    private Set<ProductModel> products = new HashSet<>();
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private UserModel user;
 
 }
