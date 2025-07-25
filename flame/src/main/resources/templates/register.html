@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Registration</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f3f3f3;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        form {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            width: 350px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        label {
+            margin-top: 10px;
+            display: block;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 20px;
+            background-color: #2e86de;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background-color: #1b4f72;
+        }
+
+        .error {
+            color: red;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .success {
+            color: green;
+            text-align: center;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<form th:action="@{/register}" method="post" th:object="${user}">
+    <h2>Register</h2>
+
+    <label for="firstName">First Name</label>
+    <input type="text" th:field="*{firstName}" id="firstName" required>
+
+    <label for="lastName">Last Name</label>
+    <input type="text" th:field="*{lastName}" id="lastName" required>
+
+    <label for="username">Username</label>
+    <input type="text" th:field="*{username}" id="username" required>
+
+    <label for="email">Email</label>
+    <input type="email" th:field="*{email}" id="email" required>
+
+    <label for="password">Password</label>
+    <input type="password" th:field="*{password}" id="password" required>
+
+    <label for="phone">Phone</label>
+    <input type="text" th:field="*{phone}" id="phone" required>
+
+    <label for="address">Address</label>
+    <input type="text" th:field="*{address}" id="address" required>
+
+    <button type="submit">Register</button>
+
+    <div th:if="${error}" class="error" th:text="${error}"></div>
+    <div th:if="${success}" class="success" th:text="${success}"></div>
+</form>
+
+</body>
+</html>
