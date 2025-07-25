@@ -16,9 +16,15 @@ public class AdminService {
     @Autowired
     UserRepository userRepository;
 public void addproduct(ProductModel productModel, Principal principal){
+<<<<<<< HEAD
     String user1 = principal.getName();
     UserModel user = userRepository.findByUsername(user1);
     productModel.setUser(user);
     productRepository.save(productModel);
+=======
+    // UserModel user = productModel.g();
+    // productModel.setUser(user);
+    // productRepository.save(productModel);
+>>>>>>> 175826420a537edfee28544c22ac4fbc873be9a5
 }
 }
