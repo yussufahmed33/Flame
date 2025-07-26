@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>FLAME® | Shop</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Orbitron', sans-serif;
+            background-color: #000;
+            color: #fff;
+            overflow-x: hidden;
+            box-sizing: border-box; /* تأكد من حساب الحواف والمسافات ضمن الحجم */
+        }
+
+        .header {
+            position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            z-index: 10;
+        }
+
+        .header .logo {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #fff;
+            text-shadow: 0 0 5px #fff, 0 0 10px #f00, 0 0 20px #ff4500;
+            letter-spacing: 2px;
+        }
+
+        .flame-char {
+            color: #f00;
+            text-shadow: 0 0 5px #f00, 0 0 10px #ff4500, 0 0 20px #ff4500;
+        }
+
+        .header nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            gap: 20px;
+        }
+
+        .header nav ul li {
+            display: inline;
+        }
+
+        .header nav ul li a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: color 0.3s ease;
+        }
+
+        .header nav ul li a:hover {
+            color: #f00;
+        }
+
+        .hero {
+            position: relative;
+            height: 100vh;
+            background: url('/images/flame-bg.jpeg') no-repeat center center/cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background-size: cover;
+            background-position: center center;
+            filter: brightness(0.7);
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+        }
+
+        .content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .content h1 {
+            font-size: 4rem;
+            color: #fff;
+            text-shadow: 0 0 10px #fff, 0 0 20px #f00, 0 0 30px #f00;
+            animation: fadeInUp 1.5s ease-out;
+        }
+
+        .content p {
+            font-size: 1.5rem;
+            color: #ccc;
+            margin-top: 20px;
+            animation: fadeInUp 1.5s ease-out 0.3s;
+        }
+        /* إضافة الأنماط الخاصة بأزرار الـ Login و Register */
+        .auth-buttons {
+            display: flex;
+            gap: 20px;
+            position: absolute;
+            right: 50px; /* يجعل الأزرار على اليمين */
+            top: 50px;
+        }
+
+        .auth-button {
+            background-color: #f00;
+            color: #fff;
+            padding: 10px 20px;
+            font-size: 1rem;
+            text-transform: uppercase;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+        }
+
+        .auth-button:hover {
+            background-color: #ff4500;
+            transform: scale(1.05);
+        }
+
+        .products {
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+        .products h2 {
+            font-size: 3rem;
+            color: #fff;
+            margin-bottom: 40px;
+            animation: fadeInUp 1.5s ease-out;
+        }
+
+        /* تعديل المسافات بين الـ product cards */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* 3 أعمدة ثابتة */
+            gap: 20px; /* تقليل المسافة بين الـ cards */
+            margin-top: 20px; /* إضافة مسافة في الجزء العلوي */
+        }
+
+        .product {
+            background: #222;
+            padding: 15px; /* تقليل الحواف الداخلية */
+            border-radius: 10px; /* تقليل الحواف المستديرة */
+            text-align: center;
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.7); /* تقليل الظل */
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transform: scale(1.05);
+            min-height: 350px; /* تقليل الحد الأدنى للارتفاع */
+            margin-bottom: 20px; /* تقليل المسافة السفلية بين الـ cards */
+            margin-left: 20px;
+            margin-right: 20px;
+            box-sizing: border-box; /* التأكد من أن الحواف والـ padding يتم حسابهم ضمن الحجم */
+        }
+
+        .product img {
+            width: 100%;
+            height: 100%;
+            border-radius: 10px;
+            object-fit: cover;
+        }
+
+        .product h3 {
+            font-size: 1.5rem;
+            margin-top: 15px;
+            color: #fff;
+        }
+
+        .product p {
+            font-size: 1.2rem;
+            margin-top: 10px;
+            color: #f00;
+        }
+
+        .product:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 30px rgba(255, 0, 0, 1);
+        }
+
+        .about, .contact {
+            padding: 60px 20px;
+            background-color: #111;
+            text-align: center;
+        }
+
+        .about h2, .contact h2 {
+            font-size: 2rem;
+            color: #fff;
+            margin-bottom: 30px;
+        }
+
+        footer {
+            background-color: #111;
+            text-align: center;
+            padding: 20px;
+            color: #fff;
+            font-size: 1rem;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            0% {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes zoomIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* تحسين العرض على الجوال */
+        @media (max-width: 768px) {
+            .product-grid {
+                grid-template-columns: repeat(2, 1fr); /* عرض عمودين على الجوال */
+                gap: 15px; /* تقليل المسافة بين الـ cards */
+            }
+
+            .product {
+                min-height: 260px; /* تعديل الحد الأدنى للارتفاع ليتناسب مع الجوال */
+            }
+        }
+
+        /* تحسين العرض على الهواتف الصغيرة */
+        @media (max-width: 480px) {
+            .product-grid {
+                grid-template-columns: 1fr; /* عرض عمود واحد على الهواتف الصغيرة */
+                gap: 10px; /* تقليل المسافة بين الـ cards */
+            }
+
+            .product {
+                padding: 10px; /* تقليل المسافات الداخلية لتناسب الهواتف */
+                min-height: 240px; /* تعديل الحد الأدنى للارتفاع */
+            }
+        }
+    </style>
+</head>
+<body>
+<header class="header">
+    <div class="logo">FL<span class="flame-char">A</span>ME®</div>
+    <nav>
+        <ul>
+            <li><a href="#products">Shop</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
+    <div class="auth-buttons">
+        <a href="/login" class="auth-button">Login</a>
+        <a href="/register" class="auth-button">Register</a>
+    </div>
+
+</header>
+
+<section class="hero">
+    <div class="overlay"></div>
+    <div class="content">
+        <h1>Streetwear that hits different 🔥</h1>
+        <p>Reflective. Bold. Urban.</p>
+    </div>
+</section>
+
+<section id="products" class="products">
+    <h2>Shop The Collection</h2>
+    <div class="product-grid">
+        <div class="product" th:each="product : ${products}">
+            <img th:src="@{${product.image}}" alt="Reflective Mask">
+            <h3 th:text="${product.name}">Reflective Mask</h3>
+            <p th:text="${product.price}">$25</p>
+        </div>
+    </div>
+</section>
+
+<section id="about" class="about">
+    <h2>About FLAME</h2>
+    <p>FLAME® is more than a brand. It's an identity for the streets. Designed for those who stand out in the dark.</p>
+</section>
+
+<section id="contact" class="contact">
+    <h2>Contact</h2>
+    <p>DM us on Instagram @flaame.eg or email support@flaame.com</p>
+</section>
+
+<footer>
+    <p>© 2025 FLAME®. All rights reserved.</p>
+</footer>
+
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+    AOS.init();
+</script>
+</body>
+</html>
