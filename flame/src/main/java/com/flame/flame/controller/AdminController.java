@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
 
@@ -21,7 +22,9 @@ public class AdminController {
         return "addproduct";
     }
     @PostMapping("/addproduct")
-    public void addproduct(@ModelAttribute ProductModel productModel, Principal principal){
-        adminService.addproduct(productModel,principal);
+    public void addproduct(@ModelAttribute ProductModel productModel,
+                           @RequestParam("imageFile") MultipartFile imageFile,
+                           Principal principal){
+        adminService.addproduct(productModel,imageFile,principal);
     }
 }
