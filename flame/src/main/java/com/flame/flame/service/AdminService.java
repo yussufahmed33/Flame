@@ -32,7 +32,7 @@ public class AdminService {
 
             // حفظ الصورة إن وُجدت
             if (imageFile != null && !imageFile.isEmpty()) {
-                String uploadDir = "/home/ubuntu/Flame/flame/uploads/";
+                String uploadDir = "uploads/";
 
                 File uploadFolder = new File(uploadDir);
                 if (!uploadFolder.exists()) uploadFolder.mkdirs();
