@@ -40,7 +40,7 @@ public class AdminService {
                 Path filePath = Paths.get(uploadDir, fileName);
                 Files.copy(imageFile.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
-                productModel.setImage(fileName); // تخزين اسم الصورة فقط
+                productModel.setImage(String.valueOf(filePath)); // تخزين اسم الصورة فقط
             }
 
             // حفظ المنتج
