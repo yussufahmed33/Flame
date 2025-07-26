@@ -32,15 +32,17 @@ public class AdminService {
 
             // حفظ الصورة إن وُجدت
             if (imageFile != null && !imageFile.isEmpty()) {
-                String uploadDir = "uploads/";
+                String uploadDir = "/home/ubuntu/Flame/flame/uploads/";
+
                 File uploadFolder = new File(uploadDir);
                 if (!uploadFolder.exists()) uploadFolder.mkdirs();
 
                 String fileName = UUID.randomUUID() + "_" + imageFile.getOriginalFilename();
                 Path filePath = Paths.get(uploadDir, fileName);
                 Files.copy(imageFile.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+                String relativePath = "uploads/" + fileName;
+                productModel.setImage(relativePath);
 
-                productModel.setImage(String.valueOf(filePath)); // تخزين اسم الصورة فقط
             }
 
             // حفظ المنتج
