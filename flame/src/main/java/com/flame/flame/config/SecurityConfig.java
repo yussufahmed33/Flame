@@ -33,7 +33,7 @@ public class SecurityConfig {
                         .frameOptions(frame -> frame.disable())
                 )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/","/h2-console/**", "/css/**", "/js/**", "/register", "/login").permitAll()
+                        .requestMatchers("/","/h2-console/**", "/css/**", "/js/**", "/register", "/login","/uploads/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
