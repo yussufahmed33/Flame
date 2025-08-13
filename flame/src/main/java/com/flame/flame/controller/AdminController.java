@@ -21,10 +21,21 @@ public class AdminController {
 
         return "addproduct";
     }
+
+//    @PostMapping("/addproduct")
+//    public void addproduct(@ModelAttribute ProductModel productModel,
+//                           @RequestParam("images") MultipartFile[] images,
+//                           Principal principal) {
+//        adminService.addproduct(productModel, images, principal);
+//    }
     @PostMapping("/addproduct")
-    public void addproduct(@ModelAttribute ProductModel productModel,
-                           @RequestParam("imageFile") MultipartFile imageFile,
-                           Principal principal){
-        adminService.addproduct(productModel,imageFile,principal);
+    public void addproduct(
+            @ModelAttribute ProductModel productModel,
+            @RequestParam("productImages") MultipartFile[] images,
+            Principal principal
+    ) {
+       adminService.addproduct(productModel,images,principal);
     }
+
+
 }

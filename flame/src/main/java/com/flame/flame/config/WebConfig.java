@@ -10,6 +10,8 @@ public class WebConfig implements WebMvcConfigurer {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         // تحديد المسار للصور
         registry.addResourceHandler("/uploads/**")
-                .addResourceLocations("file:/home/ubuntu/Flame/flame/uploads/");
+               // .addResourceLocations("file:/C:/Users/yussuf ahmed/Documents/GitHub/flame/flame/uploads/");
+
+          .addResourceLocations("file:/home/ubuntu/Flame/flame/uploads/");
     }
 }

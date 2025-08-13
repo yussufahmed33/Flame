@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Product Details</title>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #000;
+  color: #fff;
+  padding: 20px;
+}
+.product-container {
+  display: flex;
+  gap: 30px;
+}
+.main-image {
+  width: 400px;
+  height: 400px;
+  border: 2px solid #f00;
+  border-radius: 10px;
+  object-fit: cover;
+}
+.thumbnails {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+.thumbnails img {
+  width: 80px;
+  height: 80px;
+  cursor: pointer;
+  border-radius: 5px;
+  border: 2px solid transparent;
+  transition: border 0.3s;
+}
+.thumbnails img:hover {
+  border: 2px solid #f00;
+}
+.product-info {
+  max-width: 400px;
+}
+.buy-button {
+  background: #f00;
+  color: #fff;
+  padding: 15px 25px;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-top: 20px;
+  transition: background 0.3s;
+}
+.buy-button:hover {
+  background: #ff4500;
+}
+</style>
+</head>
+<body>
+
+<div class="product-container">
+  <div>
+    <img id="mainImage" src="image1.jpg" class="main-image" alt="Product Image">
+    <div class="thumbnails">
+      <img src="image1.jpg" onclick="changeImage(this.src)">
+      <img src="image2.jpg" onclick="changeImage(this.src)">
+      <img src="image3.jpg" onclick="changeImage(this.src)">
+    </div>
+  </div>
+  <div class="product-info">
+    <h1>Reflective Jacket</h1>
+    <p style="color: #f00; font-size: 1.5rem;">$59.99</p>
+    <p>This reflective jacket is designed for streetwear lovers who want to shine in the dark.</p>
+    <button class="buy-button">Buy Now</button>
+  </div>
+</div>
+
+<script>
+function changeImage(src) {
+  document.getElementById('mainImage').src = src;
+}
+</script>
+
+</body>
+</html>

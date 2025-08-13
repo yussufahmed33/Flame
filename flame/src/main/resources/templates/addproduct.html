@@ -191,8 +191,9 @@
     <label for="category">Category</label>
     <input type="text" th:field="*{category}" id="category">
 
-    <label for="image">Upload Image</label>
-    <input type="file" name="imageFile" id="image" accept="image/*" required>
+    <!-- رفع صور متعددة -->
+    <label for="productImages">Upload Images</label>
+    <input type="file" name="productImages" id="productImages" accept="image/*" multiple>
 
     <button type="submit">Add Product</button>
 

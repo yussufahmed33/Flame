@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>FLAME® | Checkout</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
+    <style>
+        .shipping-form select {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: none;
+            margin-bottom: 15px;
+            outline: none;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            appearance: none; /* إخفاء السهم الافتراضي */
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-image: url("data:image/svg+xml;utf8,<svg fill='white' height='12' viewBox='0 0 24 24' width='12' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 12px;
+        }
+
+        /* لما القائمة تتفتح */
+        .shipping-form select option {
+            background-color: #fff; /* القائمة بيضاء */
+            color: #000; /* النص أسود عشان يبان */
+        }
+
+
+        body {
+            margin: 0;
+            font-family: 'Orbitron', sans-serif;
+            background-color: #111;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 30px;
+        }
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px #ff0000;
+        }
+        .checkout-container {
+            display: flex;
+            flex-wrap: wrap;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+            overflow: hidden;
+            max-width: 900px;
+            width: 100%;
+        }
+        .product-summary {
+            flex: 1;
+            min-width: 300px;
+            padding: 20px;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .product-summary img {
+            width: 95%;
+            height: 85%;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.5);
+            transition: transform 0.3s ease;
+        }
+        .product-summary img:hover {
+            transform: scale(1.05);
+        }
+        .product-summary h2 {
+            margin: 15px 0 5px;
+            font-size: 1.2rem;
+        }
+        .product-summary p {
+            margin: 5px 0;
+        }
+        .shipping-form {
+            flex: 1;
+            min-width: 300px;
+            padding: 20px;
+        }
+        .shipping-form label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+        .shipping-form input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: none;
+            margin-bottom: 15px;
+            outline: none;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+        .totalPrice {
+            font-size: 1.2rem;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .confirm-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(90deg, rgba(255, 0, 0, 0.5), #ff0000);
+            border: none;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.5);
+        }
+        .confirm-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 25px rgba(255, 0, 0, 0.5);
+        }
+    </style>
+</head>
+<body>
+
+<h1>Checkout</h1>
+
+<div class="checkout-container">
+
+    <!-- Product Summary -->
+    <div class="product-summary">
+        <img th:if="${product != null}" th:src="@{'/' + ${product.image}}" alt="Product" />
+
+        <h2 th:text="${product != null ? product.name : 'Product Name'}">Product Name</h2>
+        <p>
+            Price per unit:
+            <span id="unitPrice"
+                  th:text="${product != null ? (product.price % 1 == 0 ? product.price.intValue() : product.price) : 0}">
+        0
+    </span> L.E
+        </p>
+
+    </div>
+
+    <!-- Shipping & Payment Form -->
+    <div class="shipping-form">
+        <form th:action="@{/confirm-order}" method="post">
+
+            <label>Quantity</label>
+            <input type="hidden" id="totalPriceInput" name="totalPrice" th:value="${totalPrice}" />
+            <input type="hidden" id="deliveryFeeInput" name="deliveryFee" />
+            <input type="hidden" name="productId" th:value="${product.id}" />
+            <input type="hidden" id="governorateNameInput" name="governorateName"/>
+            <input type="number" id="quantity" name="quantity" min="1" value="1" required>
+
+            <label>Full Name</label>
+            <input type="text" name="fullName"
+                   th:value="${fullName != null ? fullName : ''}">
+
+            <label>Address</label>
+            <input type="text" name="address"
+                   th:value="${auser != null ? auser.address : ''}" required>
+
+            <label>City</label>
+            <select id="governorate" name="governorate" required>
+                <option th:each="g : ${governorates}"
+                        th:value="${g.getName()+' , '+g.getDeliveryPrice()}"
+                        th:text="${g.getName() + ' , ' + (g.getDeliveryPrice() % 1 == 0 ? g.getDeliveryPrice().intValue() : g.getDeliveryPrice()) + ' L.E'}"
+                        th:attr="data-delivery-price=${g.deliveryPrice}">
+                </option>
+
+
+            </select>
+
+
+            <label>Phone Number</label>
+            <input type="text" name="phone"
+                   th:value="${auser != null ? auser.phone : ''}" required>
+
+            <div class="totalPrice">
+                Total: <span id="totalPrice" th:text="${product != null ? product.price : 0}">0</span> L.E
+            </div>
+
+            <button class="confirm-btn" type="submit">Confirm Order</button>
+        </form>
+    </div>
+
+</div>
+
+<script>
+    // const quantityInput = document.getElementById('quantity');
+    // const unitPriceSpan = document.getElementById('unitPrice');
+    // const totalPriceSpan = document.getElementById('totalPrice');
+    //
+    // const unitPrice = parseFloat(unitPriceSpan.textContent);
+    //
+    // function updateTotalPrice() {
+    //     let quantity = parseInt(quantityInput.value);
+    //     if (isNaN(quantity) || quantity < 1) {
+    //         quantity = 1;
+    //         quantityInput.value = 1;
+    //     }
+    //     let total = unitPrice * quantity;
+    //     totalPriceSpan.textContent = (total % 1 === 0) ? total.toFixed(0) : total.toFixed(2);
+    // }
+    //
+    // quantityInput.addEventListener('input', updateTotalPrice);
+    //
+    // updateTotalPrice();
+    const quantityInput = document.getElementById('quantity');
+    const unitPriceSpan = document.getElementById('unitPrice');
+    const totalPriceSpan = document.getElementById('totalPrice');
+    const governorateSelect = document.getElementById('governorate');
+    const deliveryFeeInput = document.getElementById('deliveryFeeInput');
+
+
+    function updateTotalPrice() {
+        let quantity = parseInt(quantityInput.value);
+        if (isNaN(quantity) || quantity < 1) {
+            quantity = 1;
+            quantityInput.value = 1;
+        }
+
+        const unitPrice = parseFloat(unitPriceSpan.textContent) || 0;
+
+        const selectedOption = governorateSelect.options[governorateSelect.selectedIndex];
+        const deliveryPrice = parseFloat(selectedOption.getAttribute('data-delivery-price')) || 0;
+
+        // فصل اسم المحافظة من قيمة option (قبل الفاصلة)
+        const governorateName = selectedOption.value.split(' , ')[0].trim();
+
+        const total = (unitPrice * quantity) + deliveryPrice;
+
+        totalPriceSpan.textContent = (total % 1 === 0) ? total.toFixed(0) : total.toFixed(2);
+        document.getElementById('totalPriceInput').value = total;
+        deliveryFeeInput.value = deliveryPrice;
+
+        // عبي اسم المحافظة في الحقل المخفي
+        document.getElementById('governorateNameInput').value = governorateName;
+    }
+
+
+    // حدث عند تغيير الكمية أو المحافظة
+    quantityInput.addEventListener('input', updateTotalPrice);
+    governorateSelect.addEventListener('change', updateTotalPrice);
+
+    // حدث أولي عند تحميل الصفحة
+    updateTotalPrice();
+
+</script>
+
+</body>
+</html>
