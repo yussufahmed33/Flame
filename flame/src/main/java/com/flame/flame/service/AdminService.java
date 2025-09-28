@@ -1,8 +1,10 @@
 package com.flame.flame.service;
 
+import com.flame.flame.model.OrderModel;
 import com.flame.flame.model.ProductImage;
 import com.flame.flame.model.ProductModel;
 import com.flame.flame.model.UserModel;
+import com.flame.flame.repository.OrderRepository;
 import com.flame.flame.repository.ProductImageRepository;
 import com.flame.flame.repository.ProductRepository;
 import com.flame.flame.repository.UserRepository;
@@ -18,6 +20,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -28,13 +31,15 @@ public class AdminService {
     UserRepository userRepository;
     @Autowired
     ProductImageRepository productImageRepository;
+    @Autowired
+    OrderRepository orderRepository;
     public void addproduct(ProductModel productModel, MultipartFile[] images, Principal principal) {
         try {
             // ربط المنتج بالمستخدم الحالي
             String username = principal.getName();
             UserModel user = userRepository.findByUsername(username);
             productModel.setUser(user);
-
+            productModel.setQuantity(0);
             // حفظ المنتج أولاً للحصول على الـ ID
             productRepository.save(productModel);
 
@@ -76,5 +81,10 @@ public class AdminService {
     }
 
 
-
+    public List<OrderModel> getAllOrders(){
+        return orderRepository.findAll();
+    }
+    public List<ProductModel> getAllProducts(){
+        return productRepository.findAll();
+    }
 }

@@ -1,5 +1,6 @@
 package com.flame.flame.model;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Generated;
@@ -13,7 +14,9 @@ public class OrderModel {
 @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private int userId;
+    @ManyToOne(optional = true)
+    @JoinColumn(name = "user_id", nullable = true)
+    private UserModel user;
     private int productId;
     private int quantity;
     private LocalDateTime orderDate;
@@ -24,4 +27,9 @@ public class OrderModel {
     private String status;
     @Column(name = "governorateName")
     private String governorateName;
+    private String city;
+    private String postalCode;
+    private String phone;
+    private String paymentMethod;
+    private String productImg;
 }

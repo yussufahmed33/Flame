@@ -33,8 +33,9 @@ public class SecurityConfig {
                         .frameOptions(frame -> frame.disable())
                 )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/","/h2-console/**", "/css/**", "/js/**", "/register", "/login","/uploads/**").permitAll()
-                        .anyRequest().authenticated()
+                      //  .requestMatchers("/","/h2-console/**", "/css/**", "/js/**", "/register", "/login","/uploads/**","/assets/**","cart/**").permitAll()
+                        .anyRequest()//.authenticated()
+                        .permitAll()
                 )
                 .formLogin(form -> form
                         .loginPage("/login") // إذا عندك صفحة login مخصصة

@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <link rel="shortcut icon" href="/uploads/sha3lanLogo.jpg" type="image/svg+xml">
+
+    <title th:text="${product.name + ' - Sha3lan'}">Product Details - Sha3lan</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #fff;
+        }
+
+        /* Skip to content for accessibility */
+        .skip-to-content {
+            position: absolute;
+            top: -40px;
+            left: 6px;
+            background: #000;
+            color: #fff;
+            padding: 8px;
+            text-decoration: none;
+            z-index: 100;
+        }
+
+        .skip-to-content:focus {
+            top: 6px;
+        }
+
+        /* Header */
+        header {
+            background-color: #1f2937;
+            color: white;
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .menu-button {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: #d1d5db;
+        }
+
+        .logo-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+        }
+
+        .header-icons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .header-icon {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 0.375rem;
+            transition: background-color 0.2s;
+        }
+
+        .header-icon:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Breadcrumb */
+        .breadcrumb {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+
+        .breadcrumb a {
+            color: #6b7280;
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            color: #374151;
+        }
+
+        /* Main Content */
+        .main-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .product-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: start;
+        }
+
+        /* Product Image */
+        .product-image-container {
+            position: relative;
+        }
+
+        .product-image {
+            width: 100%;
+            height: auto;
+            border-radius: 0.5rem;
+            object-fit: cover;
+        }
+
+        /* Product Details */
+        .product-details {
+            padding: 1rem 0;
+        }
+
+        .brand-name {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-title {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #111827;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .pricing {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .original-price {
+            font-size: 1rem;
+            color: #6b7280;
+            text-decoration: line-through;
+        }
+
+        .sale-price {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #111827;
+        }
+
+        .sale-badge {
+            background-color: #111827;
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        /* Quantity Section */
+        .quantity-section {
+            margin: 2rem 0;
+        }
+
+        .quantity-label {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            width: fit-content;
+        }
+
+        .quantity-btn {
+            background: none;
+            border: none;
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #374151;
+            transition: background-color 0.2s;
+        }
+
+        .quantity-btn:hover:not(:disabled) {
+            background-color: #f3f4f6;
+        }
+
+        .quantity-btn:disabled {
+            color: #9ca3af;
+            cursor: not-allowed;
+        }
+
+        .quantity-input {
+            border: none;
+            text-align: center;
+            font-size: 1rem;
+            font-weight: 600;
+            width: 3rem;
+            padding: 0.75rem 0;
+            outline: none;
+        }
+
+        /* Add to Cart Button */
+        .add-to-cart-btn {
+            width: 100%;
+            background-color: #111827;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            margin: 1.5rem 0 0.5rem 0;
+        }
+
+        .add-to-cart-btn:hover {
+            background-color: #1f2937;
+        }
+
+        /* Buy Now Button */
+        .buy-now-btn {
+            width: 100%;
+            background-color: #ffffff;
+            color: #111827;
+            border: 2px solid #111827;
+            padding: 1rem 2rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin: 0.5rem 0 1.5rem 0;
+        }
+
+        .buy-now-btn:hover {
+            background-color: #111827;
+            color: white;
+        }
+
+        /* Buy More Save More Section */
+        .bulk-pricing {
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .bulk-pricing-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .bulk-option {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.375rem;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+
+        .bulk-option:hover {
+            border-color: #d1d5db;
+        }
+
+        .bulk-option.selected {
+            border-color: #111827;
+            background-color: #f9fafb;
+        }
+
+        .bulk-quantity {
+            font-weight: 600;
+            color: #111827;
+        }
+
+        .bulk-savings {
+            font-size: 0.875rem;
+            color: #059669;
+            font-weight: 500;
+        }
+
+        .bulk-price {
+            font-weight: bold;
+            color: #111827;
+        }
+
+        .bulk-original-price {
+            font-size: 0.875rem;
+            color: #6b7280;
+            text-decoration: line-through;
+            margin-left: 0.5rem;
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .menu-button {
+                display: block;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .header-container {
+                padding: 0 1rem;
+            }
+
+            .product-container {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .main-content {
+                padding: 1rem;
+            }
+
+            .product-title {
+                font-size: 1.5rem;
+            }
+
+            .bulk-option {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+
+            .bulk-price-container {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+        }
+
+        /* Loading and Error States */
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #6b7280;
+        }
+
+        .error {
+            text-align: center;
+            padding: 2rem;
+            color: #dc2626;
+        }
+    </style>
+</head>
+<body>
+<a href="#main-content" class="skip-to-content">Skip to main content</a>
+
+<!-- Header -->
+<header>
+    <div class="header-container">
+        <button class="menu-button" aria-label="Open menu">☰</button>
+
+        <nav class="nav-links">
+            <a href="/collections">All collections</a>
+<!--            <a href="/caps">Caps</a>-->
+        </nav>
+
+        <div class="logo-container">
+<!--            <div class="logo-text">capp</div>-->
+            <div class="logo-text">
+                <img src="/uploads/sha3lanLogo.jpg" alt="Sha3lan Logo" width="130" height="50">
+            </div>
+        </div>
+
+        <div class="header-icons">
+            <button class="header-icon" aria-label="Search">🔍</button>
+            <button class="header-icon" aria-label="Account">👤</button>
+            <button class="header-icon" aria-label="Cart">🛒</button>
+        </div>
+    </div>
+</header>
+
+<!-- Breadcrumb -->
+<nav class="breadcrumb" aria-label="Breadcrumb">
+    <a href="/">Home</a> /
+    <a href="/products">Products</a> /
+    <span th:text="${product.name}">Product Name</span>
+</nav>
+
+<!-- Main Content -->
+<main id="main-content" class="main-content">
+    <div class="product-container">
+        <!-- Product Image -->
+        <div class="product-image-container">
+            <img th:src="@{'/' + ${product.image}}"
+                 th:alt="${product.name}"
+                 class="product-image"
+                 onerror="this.src='/placeholder.svg'">
+        </div>
+
+        <!-- Product Details -->
+        <div class="product-details">
+            <div class="brand-name" th:text="${product.name ?: 'CAPP EGYPT'}">CAPP EGYPT</div>
+
+            <h1 class="product-title" th:text="${product.name}">Product Name</h1>
+
+            <div class="pricing">
+                    <span class="original-price" th:if="${product.price}"
+                          th:text="'LE ' + ${#numbers.formatDecimal(product.price, 1, 2)} + ' EGP'">LE 500.00 EGP</span>
+                <span class="sale-price" th:text="'LE ' + ${#numbers.formatDecimal(product.price, 1, 2)} + ' EGP'">LE 250.00 EGP</span>
+                <span class="sale-badge" th:if="${product.price}">Sale</span>
+            </div>
+
+            <!-- Quantity Section -->
+            <div class="quantity-section">
+                <label class="quantity-label" for="quantity">Quantity</label>
+                <div class="quantity-controls">
+                    <button type="button" class="quantity-btn" id="decrease-btn" onclick="updateQuantity(-1)">−</button>
+                    <input type="number" id="quantity" class="quantity-input" value="1" min="1" readonly>
+                    <button type="button" class="quantity-btn" id="increase-btn" onclick="updateQuantity(1)">+</button>
+                </div>
+            </div>
+
+            <!-- Add to Cart -->
+            <button type="button" class="add-to-cart-btn" onclick="addToCart()">
+                Add to cart
+            </button>
+
+            <!-- Buy Now -->
+            <button type="button" class="buy-now-btn" onclick="buyNow()">
+                Buy now
+            </button>
+
+            <!-- Buy More Save More Section -->
+            <div class="bulk-pricing" th:if="${product.price}">
+                <h3 class="bulk-pricing-title">Buy more Save more</h3>
+
+                <div class="bulk-option" data-quantity="3" onclick="selectBulkOption(3)">
+                    <div>
+                        <div class="bulk-quantity">BUY 3</div>
+                        <div class="bulk-savings">100 EGP OFF</div>
+                    </div>
+                    <div class="bulk-price-container">
+                        <span class="bulk-price">LE 650.00</span>
+                        <span class="bulk-original-price">LE 750.00</span>
+                    </div>
+                </div>
+
+                <!-- Additional bulk options can be added with Thymeleaf iteration -->
+                <div th:each="option : ${bulkPricing}" class="bulk-option"
+                     th:data-quantity="${option.quantity}"
+                     th:onclick="'selectBulkOption(' + ${option.quantity} + ')'">
+                    <div>
+                        <div class="bulk-quantity" th:text="'BUY ' + ${option.quantity}">BUY 3</div>
+                        <div class="bulk-savings" th:text="${option.savings} + ' EGP OFF'">100 EGP OFF</div>
+                    </div>
+                    <div class="bulk-price-container">
+                        <span class="bulk-price" th:text="'LE ' + ${#numbers.formatDecimal(option.price, 1, 2)}">LE 650.00</span>
+                        <span class="bulk-original-price" th:if="${option.originalPrice}"
+                              th:text="'LE ' + ${#numbers.formatDecimal(option.originalPrice, 1, 2)}">LE 750.00</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script th:inline="javascript">
+    // Product functionality
+    let currentQuantity = 1;
+    let selectedBulkOption = null;
+    let token = document.querySelector('meta[name="_csrf"]').getAttribute("content");
+    let header = document.querySelector('meta[name="_csrf_header"]').getAttribute("content");
+
+    function updateQuantity(change) {
+        const quantityInput = document.getElementById('quantity');
+        const decreaseBtn = document.getElementById('decrease-btn');
+
+        currentQuantity = Math.max(1, currentQuantity + change);
+        quantityInput.value = currentQuantity;
+
+        // Disable decrease button when quantity is 1
+        decreaseBtn.disabled = currentQuantity <= 1;
+
+        // Clear bulk selection if quantity changes
+        if (selectedBulkOption && currentQuantity !== selectedBulkOption) {
+            clearBulkSelection();
+        }
+    }
+
+    function selectBulkOption(quantity) {
+        // Clear previous selection
+        clearBulkSelection();
+
+        // Set new selection
+        selectedBulkOption = quantity;
+        currentQuantity = quantity;
+
+        // Update UI
+        document.getElementById('quantity').value = quantity;
+        document.getElementById('decrease-btn').disabled = quantity <= 1;
+
+        // Highlight selected option
+        const option = document.querySelector(`[data-quantity="${quantity}"]`);
+        if (option) {
+            option.classList.add('selected');
+        }
+    }
+
+    function clearBulkSelection() {
+        selectedBulkOption = null;
+        const selectedOptions = document.querySelectorAll('.bulk-option.selected');
+        selectedOptions.forEach(option => option.classList.remove('selected'));
+    }
+
+    function addToCart() {
+        const productData = {
+            productId: [[${product.id}]],
+            quantity: currentQuantity,
+            bulkOption: selectedBulkOption
+        };
+
+        console.log("📌 Adding to cart with quantity:", currentQuantity);
+        console.log("📌 Full product data:", productData);
+
+        // Send as form data to match Spring Boot expectations
+        const formData = new FormData();
+        formData.append('productId', productData.productId);
+        formData.append('quantity', productData.quantity);
+        if (productData.bulkOption) {
+            formData.append('bulkOption', productData.bulkOption);
+        }
+
+        fetch('/cart/add/' + productData.productId, {
+            method: 'POST',
+            headers: {
+                [header]: token
+            },
+            body: formData
+        })
+            .then(response => {
+                if (response.ok) {
+                    showNotification(`Added ${currentQuantity} item(s) to cart successfully!`);
+                    updateCartCounter();
+                } else {
+                    throw new Error('Failed to add to cart');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showNotification('Failed to add to cart. Please try again.', 'error');
+            });
+    }
+
+    function buyNow() {
+        const productId = [[${product.id}]];
+        const quantity = Math.max(1, Number(typeof currentQuantity !== 'undefined' ? currentQuantity : 1));
+        const params = new URLSearchParams({ productId: String(productId), quantity: String(quantity) });
+        if (typeof selectedBulkOption !== 'undefined' && selectedBulkOption) params.append('bulkOption', String(selectedBulkOption));
+        window.location.href = '/buynow'+'/' + productId+'/'+quantity;
+    }
+
+    function showNotification(message, type = 'success') {
+        // Simple notification system
+        const notification = document.createElement('div');
+        notification.textContent = message;
+        notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 12px 24px;
+                border-radius: 4px;
+                color: white;
+                font-weight: 600;
+                z-index: 1000;
+                background-color: ${type === 'error' ? '#dc2626' : '#059669'};
+            `;
+
+        document.body.appendChild(notification);
+
+        setTimeout(() => {
+            notification.remove();
+        }, 3000);
+    }
+
+    function updateCartCounter() {
+        // Update cart counter in header if needed
+        // This would typically fetch the current cart count from the server
+    }
+
+    // Initialize page
+    document.addEventListener('DOMContentLoaded', function() {
+        // Set initial state
+        document.getElementById('decrease-btn').disabled = currentQuantity <= 1;
+
+        // Add keyboard navigation for quantity controls
+        document.getElementById('quantity').addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                updateQuantity(1);
+            } else if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                updateQuantity(-1);
+            }
+        });
+    });
+</script>
+</body>
+</html>

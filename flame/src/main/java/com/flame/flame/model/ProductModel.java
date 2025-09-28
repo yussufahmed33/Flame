@@ -1,5 +1,6 @@
 package com.flame.flame.model;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -25,6 +26,7 @@ private String category;
     @JoinColumn(name = "user_id")
     private UserModel user;
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+   // @Nullable
     private List<ProductImage> images;
 
 //    public void addImage(ProductImage image) {

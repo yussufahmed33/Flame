@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Shopping Cart – Capp Egypt</title>
+    <style>
+        /* CSS Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: #ffffff;
+            color: #111827;
+            line-height: 1.5;
+            min-height: 100vh;
+        }
+
+        /* Skip to content - Accessibility */
+        .skip-to-content {
+            position: absolute;
+            left: -9999px;
+            z-index: 999;
+            padding: 1em;
+            background-color: #fff;
+            color: #000;
+            text-decoration: none;
+        }
+
+        .skip-to-content:focus {
+            left: 0;
+            top: 0;
+        }
+
+        /* Header Styles - Exact match to React component */
+        header {
+            background-color: #374151; /* bg-gray-800 */
+            color: white;
+            padding: 0.75rem 1rem; /* px-4 py-3 */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .menu-button {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.125rem; /* text-lg */
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .menu-button:hover {
+            color: #d1d5db; /* hover:text-gray-300 */
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-text {
+            color: white;
+            font-weight: 500; /* font-medium */
+            font-size: 1.125rem; /* text-lg */
+            letter-spacing: 0.025em; /* tracking-wide */
+        }
+
+        .header-icons {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem; /* gap-3 */
+        }
+
+        .header-icon {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.125rem; /* text-lg */
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .header-icon:hover {
+            color: #d1d5db; /* hover:text-gray-300 */
+        }
+
+        /* Main Content - Exact match to React component */
+        .container {
+            max-width: 72rem; /* max-w-6xl */
+            margin: 0 auto; /* mx-auto */
+            padding: 2rem 1rem; /* px-4 py-8 */
+        }
+
+        .title-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem; /* mb-8 */
+        }
+
+        .page-title {
+            font-size: 1.5rem; /* text-2xl */
+            font-weight: 500; /* font-medium */
+            color: #111827; /* text-gray-900 */
+            margin: 0;
+        }
+
+        .continue-shopping-link {
+            color: #2563eb; /* text-blue-600 */
+            text-decoration: underline;
+            font-size: 0.875rem; /* text-sm */
+            transition: color 0.3s;
+        }
+
+        .continue-shopping-link:hover {
+            color: #1d4ed8; /* hover:text-blue-800 */
+        }
+
+        /* Empty cart styles */
+        .empty-cart-title {
+            font-size: 1.875rem; /* text-3xl */
+            font-weight: 500; /* font-medium */
+            text-align: center;
+            margin-bottom: 2rem; /* mb-8 */
+            color: #111827; /* text-gray-900 */
+        }
+
+        .continue-shopping-button {
+            display: block;
+            margin: 0 auto;
+            background-color: #1e293b; /* bg-slate-800 */
+            color: white;
+            padding: 0.75rem 1.5rem; /* px-6 py-3 */
+            border: none;
+            border-radius: 0.25rem; /* rounded */
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+            text-decoration: none;
+        }
+
+        .continue-shopping-button:hover {
+            background-color: #334155; /* hover:bg-slate-700 */
+        }
+
+        .account-section {
+            text-align: center;
+            margin: 3rem 0; /* my-12 */
+            padding: 2rem 0; /* py-8 */
+            border-top: 1px solid #e5e7eb; /* border-t border-gray-200 */
+        }
+
+        .account-section h2 {
+            font-size: 1.5rem; /* text-2xl */
+            font-weight: 500; /* font-medium */
+            margin-bottom: 0.5rem; /* mb-2 */
+        }
+
+        .login-link {
+            color: #2563eb; /* text-blue-600 */
+            transition: color 0.3s;
+        }
+
+        .login-link:hover {
+            color: #1d4ed8; /* hover:text-blue-800 */
+        }
+
+        /* Desktop Table - Exact match to React component */
+        .desktop-table {
+            display: table;
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 2rem; /* mb-8 */
+        }
+
+        .desktop-table thead tr {
+            border-bottom: 1px solid #e5e7eb; /* border-b border-gray-200 */
+        }
+
+        .desktop-table th {
+            text-align: left;
+            padding: 1rem 0.5rem; /* py-4 px-2 */
+            font-size: 0.875rem; /* text-sm */
+            font-weight: 500; /* font-medium */
+            color: #6b7280; /* text-gray-600 */
+            text-transform: uppercase;
+            letter-spacing: 0.05em; /* tracking-wide */
+        }
+
+        .desktop-table th:last-child {
+            text-align: right;
+        }
+
+        .desktop-table tbody tr {
+            border-bottom: 1px solid #f3f4f6; /* border-b border-gray-100 */
+        }
+
+        .desktop-table td {
+            padding: 1.5rem 0.5rem; /* py-6 px-2 */
+            vertical-align: middle;
+        }
+
+        .desktop-table td:last-child {
+            text-align: right;
+        }
+
+        .product-image-cell {
+            width: 8rem; /* w-32 */
+        }
+
+        .product-image {
+            width: 6rem; /* w-24 */
+            height: 6rem; /* h-24 */
+            object-fit: cover;
+            border: 1px solid #e5e7eb; /* border border-gray-200 */
+            border-radius: 0.375rem; /* rounded-md */
+        }
+
+        .product-name {
+            font-weight: 500; /* font-medium */
+            color: #111827; /* text-gray-900 */
+            font-size: 1rem; /* text-base */
+            margin-bottom: 0.5rem; /* mb-2 */
+        }
+
+        .product-price {
+            color: #111827; /* text-gray-900 */
+            font-size: 1rem; /* text-base */
+            margin-bottom: 1rem; /* mb-4 */
+        }
+
+        /* Quantity Control - Exact match to React component */
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            border: 1px solid #d1d5db; /* border border-gray-300 */
+            border-radius: 0.125rem; /* rounded-sm */
+            width: fit-content; /* w-fit */
+            margin-bottom: 0.5rem; /* mb-2 */
+        }
+
+        .quantity-button {
+            background: none;
+            border: none;
+            width: 2.25rem; /* w-9 */
+            height: 2.25rem; /* h-9 */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.125rem; /* text-lg */
+            transition: background-color 0.2s;
+        }
+
+        .quantity-button:hover:not(:disabled) {
+            background-color: #f3f4f6; /* hover:bg-gray-100 */
+        }
+
+        .quantity-button:disabled {
+            color: #9ca3af;
+            cursor: not-allowed;
+        }
+
+        .quantity-input {
+            width: 3rem; /* w-12 */
+            text-align: center;
+            border: none; /* border-0 */
+            padding: 0.5rem 0; /* py-2 */
+            font-size: 0.875rem; /* text-sm */
+            background: transparent; /* bg-transparent */
+            outline: none;
+        }
+
+        .remove-button {
+            background: none;
+            border: none;
+            color: #dc2626; /* text-red-600 */
+            font-size: 0.875rem; /* text-sm */
+            text-decoration: underline;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .remove-button:hover {
+            color: #b91c1c; /* hover:text-red-800 */
+        }
+
+        .item-total {
+            font-weight: 500; /* font-medium */
+            color: #111827; /* text-gray-900 */
+            font-size: 1rem; /* text-base */
+            margin-bottom: 1rem; /* mb-4 */
+        }
+
+        /* Mobile Layout - Exact match to React component */
+        .mobile-cart {
+            display: none;
+        }
+
+        .mobile-cart-item {
+            border: 1px solid #e5e7eb; /* border border-gray-200 */
+            border-radius: 0.5rem; /* rounded-lg */
+            padding: 1rem; /* p-4 */
+            margin-bottom: 1rem; /* mb-4 */
+        }
+
+        .mobile-image-container {
+            text-align: center;
+            margin-bottom: 1rem; /* mb-4 */
+        }
+
+        .mobile-cart-item img {
+            width: 6rem; /* w-24 */
+            height: 6rem; /* h-24 */
+            object-fit: cover;
+            border: 1px solid #e5e7eb; /* border border-gray-200 */
+            border-radius: 0.375rem; /* rounded-md */
+            margin: 0 auto; /* mx-auto */
+        }
+
+        .mobile-content {
+            text-align: center;
+        }
+
+        .mobile-cart-item h3 {
+            font-weight: 500; /* font-medium */
+            color: #111827; /* text-gray-900 */
+            margin-bottom: 0.5rem; /* mb-2 */
+        }
+
+        .mobile-cart-item .price {
+            color: #111827; /* text-gray-900 */
+            margin-bottom: 0.75rem; /* mb-3 */
+        }
+
+        .mobile-quantity-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 0.75rem; /* mb-3 */
+        }
+
+        .mobile-total-wrapper {
+            text-align: center;
+        }
+
+        .mobile-total-price {
+            font-weight: 500; /* font-medium */
+            color: #111827; /* text-gray-900 */
+            margin-bottom: 0.5rem; /* mb-2 */
+        }
+
+        /* Estimated Total Section - Exact match to React component */
+        .estimated-total {
+            margin-top: 2rem; /* mt-8 */
+        }
+
+        .estimated-total h2 {
+            font-size: 1.125rem; /* text-lg */
+            font-weight: 500; /* font-medium */
+            margin-bottom: 0.75rem; /* mb-3 */
+        }
+
+        .total-price {
+            font-size: 1.125rem; /* text-lg */
+            font-weight: 500; /* font-medium */
+            margin-bottom: 0.5rem; /* mb-2 */
+        }
+
+        .tax-note {
+            color: #6b7280; /* text-gray-600 */
+            font-size: 0.875rem; /* text-sm */
+            margin-bottom: 1.5rem; /* mb-6 */
+        }
+
+        .checkout-button {
+            width: 100%; /* w-full */
+            background-color: #374151; /* bg-gray-800 */
+            color: white;
+            padding: 0.75rem 1.5rem; /* py-3 px-6 */
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+        }
+
+        .checkout-button:hover:not(:disabled) {
+            background-color: #4b5563; /* hover:bg-gray-700 */
+        }
+
+        .checkout-button:disabled {
+            background-color: #d1d5db; /* bg-gray-300 */
+            color: #6b7280; /* text-gray-500 */
+            cursor: not-allowed;
+        }
+
+        /* Email Subscription - Exact match to React component */
+        .email-subscription {
+            margin: 3rem 0; /* my-12 */
+            text-align: center;
+        }
+
+        .email-subscription h2 {
+            font-size: 1.125rem; /* text-lg */
+            font-weight: 500; /* font-medium */
+            margin-bottom: 1rem; /* mb-4 */
+        }
+
+        .email-form {
+            display: flex;
+            max-width: 24rem; /* max-w-sm */
+            margin: 0 auto; /* mx-auto */
+        }
+
+        .email-input {
+            flex: 1; /* flex-1 */
+            padding: 0.5rem 0.75rem; /* px-3 py-2 */
+            border: 1px solid #d1d5db; /* border border-gray-300 */
+            outline: none; /* focus:outline-none */
+            transition: box-shadow 0.2s;
+        }
+
+        .email-input:focus {
+            box-shadow: 0 0 0 1px #374151; /* focus:ring-1 focus:ring-gray-800 */
+        }
+
+        .subscribe-button {
+            background-color: #374151; /* bg-gray-800 */
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem; /* px-4 py-2 */
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .subscribe-button:hover {
+            background-color: #4b5563; /* hover:bg-gray-700 */
+        }
+
+        /* Footer - Exact match to React component */
+        footer {
+            margin-top: 3rem; /* mt-12 */
+            padding: 1.5rem 0; /* py-6 */
+            border-top: 1px solid #e5e7eb; /* border-t border-gray-200 */
+            text-align: center;
+            font-size: 0.875rem; /* text-sm */
+            color: #6b7280; /* text-gray-600 */
+        }
+
+        .footer-link {
+            color: #2563eb; /* text-blue-600 */
+            transition: color 0.3s;
+        }
+
+        .footer-link:hover {
+            color: #1d4ed8; /* hover:text-blue-800 */
+        }
+
+        .footer-spacing {
+            margin-top: 0.75rem; /* mt-3 */
+        }
+
+        /* Responsive Styles - Exact match to React component */
+        @media (max-width: 768px) {
+            .desktop-table {
+                display: none !important; /* hidden md:block -> hidden on mobile */
+            }
+
+            .mobile-cart {
+                display: block !important; /* md:hidden -> visible on mobile */
+            }
+        }
+
+        @media (min-width: 768px) {
+            .desktop-table {
+                display: table !important; /* hidden md:block -> visible on desktop */
+            }
+
+            .mobile-cart {
+                display: none !important; /* md:hidden -> hidden on desktop */
+            }
+        }
+
+        /* Animation for quantity changes */
+        .quantity-updated {
+            animation: highlight 0.3s ease-in-out;
+        }
+
+        @keyframes highlight {
+            0% { background-color: #fef3c7; }
+            100% { background-color: transparent; }
+        }
+
+        /* Loading spinner */
+        .spinner {
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #374151;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            margin-right: 0.5rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+<a href="#main-content" class="skip-to-content">Skip to content</a>
+
+<!-- Header - Exact match to React component -->
+<header>
+    <button class="menu-button" aria-label="Open menu">☰</button>
+    <div class="logo-container">
+        <div class="logo-text">capp</div>
+    </div>
+    <div class="header-icons">
+        <button class="header-icon" aria-label="Search">🔍</button>
+        <button class="header-icon" aria-label="Account">👤</button>
+        <button class="header-icon" aria-label="Cart">🛒</button>
+    </div>
+</header>
+
+<main id="main-content" class="container">
+    <!-- Empty Cart View -->
+    <div th:if="${#lists.isEmpty(cart)}">
+        <h1 class="empty-cart-title">Your cart is empty</h1>
+        <div style="text-align: center;">
+            <a href="/collections/all" class="continue-shopping-button">Continue shopping</a>
+        </div>
+
+        <section class="account-section">
+            <h2>Have an account?</h2>
+            <p>
+                <a href="/account" class="login-link">Log in</a> to check out faster.
+            </p>
+        </section>
+
+        <section class="estimated-total">
+            <h2>Estimated total</h2>
+            <p class="total-price">LE 0.00 EGP</p>
+            <p class="tax-note">Taxes, discounts and shipping calculated at checkout.</p>
+            <button class="checkout-button" disabled>Check out</button>
+        </section>
+
+        <section class="email-subscription">
+            <h2>Subscribe to our emails</h2>
+            <form class="email-form" onsubmit="handleEmailSubmit(event)">
+                <input type="email" class="email-input" placeholder="Email" required>
+                <button type="submit" class="subscribe-button">→</button>
+            </form>
+        </section>
+    </div>
+
+    <!-- Non-Empty Cart View -->
+    <div th:unless="${#lists.isEmpty(cart)}">
+        <div class="title-wrapper">
+            <h1 class="page-title">Your cart</h1>
+            <a href="/collections/all" class="continue-shopping-link">Continue shopping</a>
+        </div>
+
+        <!-- Desktop Table View - Exact match to React component -->
+        <div class="desktop-table" style="display: block;">
+            <table style="width: 100%; border-collapse: collapse; margin-bottom: 2rem;">
+                <thead>
+                <tr style="border-bottom: 1px solid #e5e7eb;">
+                    <th style="text-align: left; padding: 1rem 0.5rem; font-size: 0.875rem; font-weight: 500; color: #6b7280; text-transform: uppercase; letter-spacing: 0.05em;">Product</th>
+                    <th style="text-align: left; padding: 1rem 0.5rem; font-size: 0.875rem; font-weight: 500; color: #6b7280; text-transform: uppercase; letter-spacing: 0.05em;">Details</th>
+                    <th style="text-align: right; padding: 1rem 0.5rem; font-size: 0.875rem; font-weight: 500; color: #6b7280; text-transform: uppercase; letter-spacing: 0.05em;">Total</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="item : ${cart}" th:data-item-id="${item.product.id}" style="border-bottom: 1px solid #f3f4f6;">
+                    <td class="product-image-cell" style="padding: 1.5rem 0.5rem; width: 8rem;">
+                        <img th:src="@{'/' + ${item.product.image}}"
+                             th:alt="${item.product.name}"
+                             class="product-image"
+                             onerror="this.src='/placeholder.svg'">
+                    </td>
+                    <td style="padding: 1.5rem 0.5rem;">
+                        <div class="product-name" th:text="${item.product.name}">Product Name</div>
+                        <div class="product-price">
+                            LE <span th:text="${#numbers.formatDecimal(item.product.price, 1, 2)}">0.00</span>
+                        </div>
+                        <div class="quantity-control">
+                            <button type="button" class="quantity-button quantity-decrease"
+                                    th:data-item-id="${item.product.id}"
+                                    th:disabled="${item.quantity <= 1}">−</button>
+                            <input type="number"
+                                   class="quantity-input"
+                                   th:value="${item.quantity}"
+                                   th:data-item-id="${item.product.id}"
+                                   min="1"
+                                   max="99">
+                            <button type="button" class="quantity-button quantity-increase"
+                                    th:data-item-id="${item.product.id}">+</button>
+                        </div>
+                    </td>
+                    <td style="padding: 1.5rem 0.5rem; text-align: right;">
+                        <div class="item-total">
+                            LE <span class="item-total-amount" th:text="${#numbers.formatDecimal(item.product.price * item.quantity, 1, 2)}">0.00</span>
+                        </div>
+                        <button class="remove-button"
+                                th:data-item-id="${item.product.id}"
+                                th:data-product-name="${item.product.name}">
+                            Remove
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Mobile Responsive Layout - Exact match to React component -->
+        <div class="mobile-cart">
+            <div th:each="item : ${cart}" class="mobile-cart-item" th:data-item-id="${item.product.id}">
+                <div class="mobile-image-container">
+                    <img th:src="@{'/' + ${item.product.image}}"
+                         th:alt="${item.product.name}"
+                         onerror="this.src='/placeholder.svg'">
+                </div>
+                <div class="mobile-content">
+                    <h3 th:text="${item.product.name}">Product Name</h3>
+                    <p class="price">
+                        LE <span th:text="${#numbers.formatDecimal(item.product.price, 1, 2)}">0.00</span>
+                    </p>
+
+                    <div class="mobile-quantity-wrapper">
+                        <div class="quantity-control">
+                            <button type="button" class="quantity-button quantity-decrease"
+                                    th:data-item-id="${item.product.id}"
+                                    th:disabled="${item.quantity <= 1}">−</button>
+                            <input type="number"
+                                   class="quantity-input"
+                                   th:value="${item.quantity}"
+                                   th:data-item-id="${item.product.id}"
+                                   min="1"
+                                   max="99">
+                            <button type="button" class="quantity-button quantity-increase"
+                                    th:data-item-id="${item.product.id}">+</button>
+                        </div>
+                    </div>
+
+                    <div class="mobile-total-wrapper">
+                        <div class="mobile-total-price">
+                            LE <span class="item-total-amount" th:text="${#numbers.formatDecimal(item.product.price * item.quantity, 1, 2)}">0.00</span>
+                        </div>
+                        <button class="remove-button"
+                                th:data-item-id="${item.product.id}"
+                                th:data-product-name="${item.product.name}">
+                            Remove
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <section class="estimated-total">
+            <h2>Estimated total</h2>
+            <p class="total-price">
+                LE <span id="grand-total" th:text="${#numbers.formatDecimal(grandTotal, 1, 2)}">0.00</span> EGP
+            </p>
+            <p class="tax-note">Taxes, discounts and shipping calculated at checkout.</p>
+            <button class="checkout-button">Check out</button>
+        </section>
+
+        <section class="email-subscription">
+            <h2>Subscribe to our emails</h2>
+            <form class="email-form" onsubmit="handleEmailSubmit(event)">
+                <input type="email" class="email-input" placeholder="Email" required>
+                <button type="submit" class="subscribe-button">→</button>
+            </form>
+        </section>
+    </div>
+</main>
+
+<!-- Footer - Exact match to React component -->
+<footer>
+    <p>© 2023, Capp Egypt</p>
+    <div class="footer-spacing">
+        <a href="/privacy-policy" class="footer-link">Privacy policy</a>
+    </div>
+    <p class="footer-spacing">* Choosing a selection results in a full page refresh.</p>
+    <p>* Opens in a new window.</p>
+</footer>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        initializeCartFunctionality();
+        initializeInteractiveElements();
+    });
+
+    function initializeCartFunctionality() {
+        // Quantity increase buttons
+        document.querySelectorAll('.quantity-increase').forEach(button => {
+            button.addEventListener('click', function() {
+                const itemId = this.getAttribute('data-item-id');
+                const firstInput = document.querySelector(`.quantity-input[data-item-id="${itemId}"]`);
+                if (firstInput) {
+                    const currentValue = parseInt(firstInput.value) || 1;
+                    const newValue = Math.min(currentValue + 1, 99);
+                    updateQuantity(itemId, newValue);
+                }
+            });
+        });
+
+        // Quantity decrease buttons
+        document.querySelectorAll('.quantity-decrease').forEach(button => {
+            button.addEventListener('click', function() {
+                const itemId = this.getAttribute('data-item-id');
+                const firstInput = document.querySelector(`.quantity-input[data-item-id="${itemId}"]`);
+                if (firstInput) {
+                    const currentValue = parseInt(firstInput.value) || 1;
+                    const newValue = Math.max(currentValue - 1, 1);
+                    updateQuantity(itemId, newValue);
+                }
+            });
+        });
+
+        // Quantity input direct change
+        document.querySelectorAll('.quantity-input').forEach(input => {
+            input.addEventListener('change', function() {
+                const itemId = this.getAttribute('data-item-id');
+                let newValue = parseInt(this.value) || 1;
+                newValue = Math.max(1, Math.min(newValue, 99));
+                updateQuantity(itemId, newValue);
+            });
+        });
+
+        // Remove item buttons
+        document.querySelectorAll('.remove-button').forEach(button => {
+            button.addEventListener('click', function() {
+                const itemId = this.getAttribute('data-item-id');
+                const productName = this.getAttribute('data-product-name');
+                if (confirm(`Are you sure you want to remove "${productName}" from your cart?`)) {
+                    removeItem(itemId);
+                }
+            });
+        });
+    }
+
+    function updateQuantity(itemId, newQuantity) {
+        // Update all quantity inputs for this item (both desktop and mobile)
+        document.querySelectorAll(`.quantity-input[data-item-id="${itemId}"]`).forEach(input => {
+            input.value = newQuantity;
+        });
+
+        // Update disabled state of decrease buttons
+        document.querySelectorAll(`.quantity-decrease[data-item-id="${itemId}"]`).forEach(button => {
+            button.disabled = newQuantity <= 1;
+        });
+
+        // Add visual feedback
+        const items = document.querySelectorAll(`[data-item-id="${itemId}"]`);
+        items.forEach(item => {
+            item.classList.add('quantity-updated');
+            setTimeout(() => item.classList.remove('quantity-updated'), 300);
+        });
+
+        // Update item totals (client-side preview)
+        const priceElements = document.querySelectorAll(`[data-item-id="${itemId}"] .product-price span, [data-item-id="${itemId}"] .price span`);
+        const totalElements = document.querySelectorAll(`[data-item-id="${itemId}"] .item-total-amount`);
+
+        if (priceElements.length > 0 && totalElements.length > 0) {
+            const price = parseFloat(priceElements[0].textContent) || 0;
+            const newTotal = (price * newQuantity).toFixed(2);
+            totalElements.forEach(element => {
+                element.textContent = newTotal;
+            });
+        }
+
+        // Update grand total
+        updateGrandTotal();
+
+        console.log(`Updated item ${itemId} quantity to ${newQuantity}`);
+    }
+
+    function removeItem(itemId) {
+        const items = document.querySelectorAll(`[data-item-id="${itemId}"]`);
+
+        items.forEach(item => {
+            item.style.transition = 'opacity 0.3s ease-out';
+            item.style.opacity = '0';
+        });
+
+        setTimeout(() => {
+            items.forEach(item => item.remove());
+            updateGrandTotal();
+
+            // Check if cart is now empty
+            const remainingItems = document.querySelectorAll('[data-item-id]');
+            if (remainingItems.length === 0) {
+                window.location.reload();
+            }
+        }, 300);
+
+        console.log(`Removed item ${itemId} from cart`);
+    }
+
+    function updateGrandTotal() {
+        let total = 0;
+
+        // Only count from desktop table to avoid double counting
+        // (mobile and desktop show the same items)
+        const desktopTotals = document.querySelectorAll('.desktop-table .item-total-amount');
+        if (desktopTotals.length > 0) {
+            // Use desktop totals if available
+            desktopTotals.forEach(element => {
+                const value = parseFloat(element.textContent) || 0;
+                total += value;
+            });
+        } else {
+            // Fallback to mobile totals if desktop not available
+            const mobileTotals = document.querySelectorAll('.mobile-cart .item-total-amount');
+            mobileTotals.forEach(element => {
+                const value = parseFloat(element.textContent) || 0;
+                total += value;
+            });
+        }
+
+        const grandTotalElement = document.getElementById('grand-total');
+        if (grandTotalElement) {
+            grandTotalElement.textContent = total.toFixed(2);
+        }
+    }
+
+    function initializeInteractiveElements() {
+        // Checkout button
+        const checkoutBtn = document.querySelector('.checkout-button');
+        if (checkoutBtn && !checkoutBtn.disabled) {
+            checkoutBtn.addEventListener('click', function() {
+                console.log('Proceeding to checkout...');
+                // Add your checkout logic here
+            });
+        }
+
+        // Header icons
+        document.querySelectorAll('.header-icon').forEach(icon => {
+            icon.addEventListener('click', function() {
+                const label = this.getAttribute('aria-label');
+                console.log(`${label} icon clicked`);
+            });
+        });
+
+        // Menu button
+        const menuButton = document.querySelector('.menu-button');
+        if (menuButton) {
+            menuButton.addEventListener('click', function() {
+                console.log('Menu button clicked');
+            });
+        }
+    }
+
+    function handleEmailSubmit(event) {
+        event.preventDefault();
+        const emailInput = event.target.querySelector('.email-input');
+        const submitBtn = event.target.querySelector('.subscribe-button');
+
+        if (emailInput && emailInput.value && emailInput.checkValidity()) {
+            const originalText = submitBtn.textContent;
+            submitBtn.innerHTML = '<div class="spinner"></div>';
+            submitBtn.disabled = true;
+
+            setTimeout(() => {
+                alert('Thank you for subscribing!');
+                emailInput.value = '';
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+            }, 1500);
+        } else {
+            alert('Please enter a valid email address.');
+        }
+    }
+</script>
+</body>
+</html>

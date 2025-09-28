@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Admin - View Orders</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #fff;
+            color: #111;
+        }
+        .page-width {
+            max-width: 1100px;
+            margin: auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        .title-wrapper-with-link {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        .title--primary {
+            font-size: 26px;
+            font-weight: bold;
+        }
+        .underlined-link {
+            font-size: 14px;
+            text-decoration: underline;
+            color: #111;
+            cursor: pointer;
+        }
+
+        /* Orders Table */
+        .orders-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .orders-table th {
+            font-size: 13px;
+            font-weight: normal;
+            text-transform: uppercase;
+            text-align: left;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+            color: #555;
+        }
+        .orders-table td {
+            padding: 15px 10px;
+            border-bottom: 1px solid #f2f2f2;
+            vertical-align: middle;
+            font-size: 15px;
+            color: #111;
+        }
+        .orders-table tbody tr:hover {
+            background-color: #f9f9f9;
+        }
+
+        /* Status select styling */
+        select.status-select {
+            font-size: 14px;
+            padding: 5px 8px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            cursor: pointer;
+            min-width: 110px;
+        }
+
+        /* Buttons */
+        .btn-edit, .btn-delete {
+            background-color: #000;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            padding: 6px 12px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+            margin-right: 5px;
+            transition: background-color 0.3s ease;
+        }
+        .btn-edit:hover {
+            background-color: #333;
+        }
+        .btn-delete {
+            background-color: #d9534f;
+        }
+        .btn-delete:hover {
+            background-color: #b52b2b;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .orders-table thead {
+                display: none;
+            }
+            .orders-table tr {
+                display: flex;
+                flex-direction: column;
+                border-bottom: 1px solid #eee;
+                margin-bottom: 15px;
+                padding-bottom: 15px;
+            }
+            .orders-table td {
+                border: none;
+                padding: 8px 0;
+            }
+            .orders-table td::before {
+                content: attr(data-label);
+                font-weight: bold;
+                display: block;
+                margin-bottom: 5px;
+                color: #555;
+                font-size: 13px;
+                text-transform: uppercase;
+            }
+
+            .btn-edit, .btn-delete {
+                width: 100%;
+                margin-bottom: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="page-width">
+    <div class="title-wrapper-with-link">
+        <h1 class="title title--primary">Admin - Orders</h1>
+        <a href="/admin" class="underlined-link">Back to Dashboard</a>
+    </div>
+
+    <div th:if="${#lists.isEmpty(orders)}" class="orders__empty">
+        <h2>No orders found</h2>
+    </div>
+
+    <table th:unless="${#lists.isEmpty(orders)}" class="orders-table">
+        <thead>
+        <tr>
+            <th>Customer</th>
+            <th>Product Image</th>
+            <th>Quantity</th>
+            <th>Order Date</th>
+            <th>Address</th>
+            <th>Governorate</th>
+            <th>City</th>
+            <th>Postal Code</th>
+            <th>Phone</th>
+            <th>Payment Method</th>
+            <th>Total Price</th>
+            <th>Delivery Fee</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="order : ${orders}" th:data-order-id="${order.id}">
+            <td data-label="Customer" th:text="${order.user != null ? order.user.name : 'Guest'}">Customer Name</td>
+            <td data-label="Product Image">
+                <img th:src="@{'/'+${order.productImg}}" alt="product image" style="width: 60px; border: 1px solid #eee; border-radius: 6px;" />
+            </td>
+            <td data-label="Quantity" th:text="${order.quantity}">1</td>
+<!--            <td data-label="Order Date" th:text="${#dates.format(order.orderDate, 'yyyy-MM-dd HH:mm')}">2025-09-22 09:00</td>-->
+            <td data-label="Order Date" th:text="${order.orderDate != null ? #temporals.format(order.orderDate, 'yyyy-MM-dd HH:mm') : 'N/A'}"></td>
+
+            <td data-label="Address" th:text="${order.address}">Some Address</td>
+            <td data-label="Governorate" th:text="${order.governorateName}">Governorate</td>
+            <td data-label="City" th:text="${order.city}">City</td>
+            <td data-label="Postal Code" th:text="${order.postalCode}">12345</td>
+            <td data-label="Phone" th:text="${order.phone}">01000000000</td>
+            <td data-label="Payment Method" th:text="${order.paymentMethod}">Credit Card</td>
+            <td data-label="Total Price" th:text="'LE ' + ${order.totalPrice} + ' EGP'">LE 100 EGP</td>
+            <td data-label="Delivery Fee" th:text="'LE ' + ${order.deliveryFee} + ' EGP'">LE 10 EGP</td>
+            <td data-label="Status">
+                <select class="status-select" th:value="${order.status}" th:data-order-id="${order.id}">
+                    <option value="PENDING" th:selected="${order.status == 'PENDING'}">Pending</option>
+                    <option value="PROCESSING" th:selected="${order.status == 'PROCESSING'}">Processing</option>
+                    <option value="COMPLETED" th:selected="${order.status == 'COMPLETED'}">Completed</option>
+                    <option value="CANCELLED" th:selected="${order.status == 'CANCELLED'}">Cancelled</option>
+                </select>
+            </td>
+            <td data-label="Actions">
+                <button class="btn-edit" th:onclick="'window.location.href=\'/admin/orders/edit/' + ${order.id} + '\''">
+                    <i class="fa fa-pen"></i> Edit
+                </button>
+                <button class="btn-delete" th:onclick="'if(confirm(\'Are you sure you want to delete this order?\')) window.location.href=\'/admin/orders/delete/' + ${order.id} + '\''">
+                    <i class="fa fa-trash"></i> Delete
+                </button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<script>
+    document.querySelectorAll('.status-select').forEach(select => {
+        select.addEventListener('change', function() {
+            const orderId = this.getAttribute('data-order-id');
+            const newStatus = this.value;
+
+            fetch(`/admin/orders/updateStatus/${orderId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRF-TOKEN': /*[[${_csrf.token}]]*/ '' // Include CSRF token if needed
+                },
+                body: JSON.stringify({ status: newStatus })
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        alert('Failed to update order status.');
+                        // Revert select value on failure (optional)
+                        // You can fetch old status or reload page
+                    } else {
+                        console.log('Order status updated successfully.');
+                    }
+                })
+                .catch(error => {
+                    alert('Error updating order status.');
+                    console.error(error);
+                });
+        });
+    });
+</script>
+</body>
+</html>

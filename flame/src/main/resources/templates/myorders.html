@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>My Orders – Capp Egypt</title>
+    <style>
+        /* Your CSS from the provided design */
+        * {
+            margin: 0; padding: 0; box-sizing: border-box;
+        }
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: #fff;
+            color: #111827;
+            line-height: 1.5;
+            min-height: 100vh;
+        }
+        .skip-to-content {
+            position: absolute;
+            left: -9999px;
+            z-index: 999;
+            padding: 1em;
+            background-color: #fff;
+            color: #000;
+            text-decoration: none;
+        }
+        .skip-to-content:focus {
+            left: 0; top: 0;
+        }
+        header {
+            background-color: #374151;
+            color: white;
+            padding: 0.75rem 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .logo-text {
+            color: white;
+            font-weight: 500;
+            font-size: 1.125rem;
+            letter-spacing: 0.025em;
+        }
+        .header-icons {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .header-icon {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.125rem;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        .header-icon:hover {
+            color: #d1d5db;
+        }
+        .container {
+            max-width: 72rem;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        .title-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        .page-title {
+            font-size: 1.5rem;
+            font-weight: 500;
+            color: #111827;
+            margin: 0;
+        }
+        .desktop-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 2rem;
+        }
+        .desktop-table thead tr {
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .desktop-table th, .desktop-table td {
+            padding: 1rem 0.5rem;
+            font-size: 0.875rem;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            text-align: left;
+            font-weight: 500;
+            border-bottom: 1px solid #f3f4f6;
+        }
+        .desktop-table td {
+            color: #111827;
+            font-weight: 400;
+            text-transform: none;
+        }
+        .desktop-table th:last-child, .desktop-table td:last-child {
+            text-align: right;
+        }
+        .estimated-total {
+            margin-top: 2rem;
+        }
+        .estimated-total h2 {
+            font-size: 1.125rem;
+            font-weight: 500;
+            margin-bottom: 0.75rem;
+        }
+        .total-price {
+            font-size: 1.125rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+        footer {
+            margin-top: 3rem;
+            padding: 1.5rem 0;
+            border-top: 1px solid #e5e7eb;
+            text-align: center;
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+    </style>
+</head>
+<body>
+<a href="#main-content" class="skip-to-content">Skip to content</a>
+
+<header>
+    <div class="logo-container">
+        <div class="logo-text">capp</div>
+    </div>
+    <div class="header-icons">
+        <button class="header-icon" aria-label="Account">👤</button>
+    </div>
+</header>
+
+<main id="main-content" class="container">
+    <div class="title-wrapper">
+        <h1 class="page-title">My Orders</h1>
+    </div>
+
+    <div th:if="${#lists.isEmpty(orders)}">
+        <p>You have no orders yet.</p>
+        <a href="/collections/all" class="continue-shopping-button">Start Shopping</a>
+    </div>
+
+    <div th:unless="${#lists.isEmpty(orders)}">
+        <table class="desktop-table">
+            <thead>
+            <tr>
+                <th>Order Date</th>
+                <th>Product ID</th>
+                <th>Quantity</th>
+                <th>Status</th>
+                <th>Total Price</th>
+                <th>Payment Method</th>
+                <th>Delivery Fee</th>
+                <th>Address</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="order : ${orders}">
+                <td th:text="${order.orderDate != null ? #temporals.format(order.orderDate, 'yyyy-MM-dd HH:mm') : 'N/A'}"></td>
+
+
+                <td>
+                    <img th:src="@{'/' + ${order.productImg}}" alt="Product Image" style="width: 100px; height: auto;"/>
+                </td>
+
+                <td th:text="${order.quantity}">1</td>
+                <td th:text="${order.status}">new</td>
+                <td>LE <span th:text="${#numbers.formatDecimal(order.totalPrice, 1, 2)}">0.00</span></td>
+                <td th:text="${order.paymentMethod}">Cash</td>
+                <td>LE <span th:text="${#numbers.formatDecimal(order.deliveryFee, 1, 2)}">0.00</span></td>
+                <td th:text="${order.address}">123 Elm St...</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <section class="estimated-total">
+            <h2>Grand Total</h2>
+            <p class="total-price">
+                LE <span id="grand-total" th:text="${#numbers.formatDecimal(grandTotal, 1, 2)}">0.00</span> EGP
+            </p>
+        </section>
+    </div>
+</main>
+
+<footer>
+    <p>© 2025, Capp Egypt</p>
+</footer>
+
+<script>
+    // Optionally, implement JS here if you want dynamic interactions or formatting
+    // Currently, no dynamic JS needed as this is a read-only table
+</script>
+</body>
+</html>

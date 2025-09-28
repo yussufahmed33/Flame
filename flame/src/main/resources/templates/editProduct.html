@@ -1,0 +1,33 @@
+<!DOCTYPE html><html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"><head>
+    <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/><title>Edit Product</title>
+    <style>
+        body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#f8fafc;margin:0}
+        .wrap{max-width:720px;margin:2rem auto;background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:1rem}
+        .field{margin:.6rem 0} label{display:block;font-size:.85rem;color:#374151;margin-bottom:.25rem}
+        input,textarea{width:100%;padding:.65rem;border:1px solid #d1d5db;border-radius:6px}
+        textarea{min-height:120px}
+        .row{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap;margin-top:.6rem}
+        button{padding:.7rem 1rem;border:0;background:#111827;color:#fff;border-radius:6px;cursor:pointer}
+        img{max-width:100%;height:auto;border-radius:6px;border:1px dashed #cbd5e1;padding:.4rem}
+        a.link{color:#111827;text-decoration:underline}
+    </style></head><body><div class="wrap">
+    <h1>Edit Product / تعديل منتج</h1>
+    <div class="field">
+        <label>Current Image / الصورة الحالية</label>
+        <img th:if="${currentImage}" th:src="${currentImage}" alt="current" onerror="this.src='/placeholder.svg'"/>
+    </div>
+    <form th:action="@{|/products/${productId}|}" th:object="${product}" method="post" enctype="multipart/form-data">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+        <div class="field"><label>Name / الاسم</label><input th:field="*{name}" required/></div>
+        <div class="field"><label>Category / الفئة</label><input th:field="*{category}" required/></div>
+        <div class="field"><label>Price / السعر</label><input th:field="*{price}" inputmode="decimal" required/></div>
+        <div class="field"><label>Description / الوصف</label><textarea th:field="*{description}" required></textarea></div>
+        <div class="field"><label>Replace image (optional) / استبدال الصورة (اختياري)</label>
+            <input type="file" name="imageFile" accept="image/*"/>
+        </div>
+        <div class="row">
+            <button type="submit">Save / حفظ</button>
+            <a class="link" th:href="@{/products}">Back / رجوع</a>
+        </div>
+    </form>
+</div></body></html>

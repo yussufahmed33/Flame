@@ -9,12 +9,14 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
+import java.util.List;
 
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
     @Autowired
     AdminService adminService;
+
     @GetMapping("/addproduct")
     public String addProduct(Model model) {
         model.addAttribute("product", new ProductModel());
@@ -37,5 +39,15 @@ public class AdminController {
        adminService.addproduct(productModel,images,principal);
     }
 
-
+@GetMapping("/orders")
+    public String getAllOrders(Model model){
+        List orders = adminService.getAllOrders();
+        model.addAttribute("orders",orders);
+        return"adminorders";
+}
+@GetMapping("/products")
+    public String getAllProducts(Model model){
+        List products = adminService.getAllProducts();
+        model.addAttribute("products",products);
+        return "allProducts";}
 }
