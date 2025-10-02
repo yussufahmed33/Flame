@@ -217,4 +217,19 @@ public String processOrder(@PathVariable int productId,
         System.out.println(orders);
         return "myorders";
     }
+
+    @GetMapping("/checkout")
+    public String checkOut(Model model ,HttpSession session ,Principal principal){
+        List<CartItem> cart = cartService.getCart(session);
+//        System.out.println(cart);
+        for(CartItem cartItem : cart){
+            System.out.println("|||||||");
+            System.out.println(cartItem);
+        }
+       model.addAttribute("cart",cart);
+        model.addAttribute("governorate",governorateService.getAllGovernorates());
+        model.addAttribute("governorates",governorateService.getAllGovernorates());
+    return "cartCheckOut";
+    }
+
     }

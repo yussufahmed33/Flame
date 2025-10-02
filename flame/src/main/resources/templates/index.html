@@ -8,10 +8,10 @@
   <meta name="_csrf" th:content="${_csrf.token}"/>
   <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
 
-  <title>Sha3lan - Biggest shopping center</title>
+  <title>Sh3lan - Biggest shopping center</title>
 
   <!-- favicon -->
-  <link rel="shortcut icon" href="/uploads/sha3lanLogo.jpg" type="image/svg+xml">
+  <link rel="shortcut icon" href="/uploads/Sha3lanLogo.jpg" type="image/png">
 
   <!-- google font -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1212,7 +1212,7 @@
     </div>
 
     <a href="#" class="logo">
-      <img src="/uploads/sha3lanLogo.jpg" alt="Sha3lan logo" width="130" height="31">
+      <img src="/uploads/sh3lanLogo.png" alt="Sh3lan logo" width="130" height="31">
     </a>
 
     <div class="header-actions">
@@ -1227,12 +1227,17 @@
         <p class="header-action-label">Search</p>
       </button>
 
-      <button class="header-action-btn">
-        <ion-icon name="cart-outline" aria-hidden="true"></ion-icon>
+      <button id="cartBtn" class="header-action-btn">
+        <ion-icon id="cartBtn" name="cart-outline" aria-hidden="true"></ion-icon>
         <p class="header-action-label">Cart</p>
         <div class="btn-badge green" aria-hidden="true">3</div>
       </button>
 
+      <script>
+        document.getElementById('cartBtn').addEventListener('click', function() {
+          window.location.href = '/cart/view';
+        });
+      </script>
       <button class="header-action-btn">
         <ion-icon name="heart-outline" aria-hidden="true"></ion-icon>
         <p class="header-action-label">Wishlisht</p>
@@ -1252,7 +1257,7 @@
       <div class="navbar-top">
 
         <a href="#" class="logo">
-          <img src="/uploads/sha3lanLogo.jpg" alt="Sha3lan logo" width="130" height="31">
+          <img src="/uploads/Sh3lanLogo.png" alt="Sh3lan logo" width="130" height="31">
         </a>
 
         <button class="nav-close-btn" data-nav-close-btn aria-label="Close Menu">
@@ -1606,11 +1611,11 @@
       <div class="footer-brand">
 
         <a href="#" class="logo">
-          <img src="/uploads/sha3lanLogo.jpg" alt="Sha3lan logo">
+          <img src="/uploads/Sh3lanLogo.png" alt="Sh3lan logo" width="150px">
         </a>
 
         <p class="footer-text">
-          Sha3lan store is a fashion theme for presents a complete wardrobe of uniquely crafted Ethnic Wear, Casuals, Edgy
+          Sh3lan store is a fashion theme for presents a complete wardrobe of uniquely crafted Ethnic Wear, Casuals, Edgy
           Denims, &
           Accessories inspired from the most contemporary
         </p>

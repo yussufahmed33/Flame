@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <title>Checkout - Capp Egypt</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; color: #333; background-color: #fff; }
+        .checkout-header { border-bottom: 1px solid #e5e7eb; padding: 1rem 0; }
+        .header-container { max-width: 1200px; margin: 0 auto; padding: 0 1rem; display: flex; justify-content: space-between; align-items: center; }
+        .logo-text { font-size: 1.125rem; font-weight: 500; color: #111827; }
+        .cart-icon { font-size: 1.25rem; color: #6b7280; }
+        .checkout-container { max-width: 1200px; margin: 0 auto; padding: 2rem 1rem; display: grid; grid-template-columns: 1fr 350px; gap: 6rem; }
+        .checkout-form { max-width: 500px; }
+        .section { margin-bottom: 2rem; }
+        .section-title { font-size: 1.125rem; font-weight: 500; color: #111827; margin-bottom: 1rem; }
+        .login-link { color: #374151; text-decoration: none; font-size: 0.875rem; float: right; margin-top: -2rem; }
+        .login-link:hover { text-decoration: underline; }
+        .form-group { margin-bottom: 1rem; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        .form-triple { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+        .form-input { width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 4px; font-size: 0.875rem; background-color: #fff; transition: border-color 0.2s; }
+        .form-input:focus { outline: none; border-color: #6b7280; }
+        .form-input::placeholder { color: #9ca3af; }
+        .form-select { width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 4px; font-size: 0.875rem; background-color: #fff; cursor: pointer; transition: border-color 0.2s; }
+        .form-select:focus { outline: none; border-color: #6b7280; }
+        .checkbox-group { display: flex; align-items: center; gap: 0.5rem; margin-top: 1rem; }
+        .checkbox { width: 1rem; height: 1rem; cursor: pointer; }
+        .checkbox-label { font-size: 0.875rem; color: #6b7280; cursor: pointer; }
+        .order-summary { border-left: 1px solid #e5e7eb; padding-left: 2rem; }
+        .order-item { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid #f3f4f6; }
+        .order-item:last-child { border-bottom: none; margin-bottom: 2rem; }
+        .item-image-container { position: relative; flex-shrink: 0; }
+        .item-image { width: 60px; height: 60px; object-fit: cover; border-radius: 8px; border: 1px solid #e5e7eb; }
+        .quantity-badge { position: absolute; top: -8px; right: -8px; background-color: #6b7280; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 600; }
+        .item-details { flex: 1; min-width: 0; }
+        .item-name { font-size: 0.875rem; font-weight: 500; color: #111827; margin-bottom: 0.25rem; word-wrap: break-word; }
+        .item-price { font-size: 0.875rem; font-weight: 600; color: #111827; text-align: right; }
+        .order-totals { border-top: 1px solid #e5e7eb; padding-top: 1rem; }
+        .total-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }
+        .total-label { font-size: 0.875rem; color: #6b7280; }
+        .total-amount { font-size: 0.875rem; font-weight: 500; color: #111827; }
+        .final-total { border-top: 1px solid #e5e7eb; padding-top: 1rem; margin-top: 1rem; }
+        .final-total .total-label { font-weight: 600; color: #111827; font-size: 1rem; }
+        .final-total .total-amount { font-weight: bold; font-size: 1.125rem; }
+        .currency-label { font-size: 0.75rem; color: #6b7280; margin-right: 0.25rem; }
+        .payment-methods { margin-bottom: 1.5rem; }
+        .payment-option { border: 1px solid #d1d5db; border-radius: 4px; margin-bottom: 0.5rem; transition: border-color 0.2s; }
+        .payment-option:hover { border-color: #9ca3af; }
+        .payment-radio { display: none; }
+        .payment-radio:checked + .payment-label { border-color: #374151; background-color: #f9fafb; }
+        .payment-label { display: block; padding: 1rem; cursor: pointer; border: 1px solid transparent; border-radius: 4px; transition: all 0.2s; }
+        .payment-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem; }
+        .payment-title { font-size: 0.875rem; font-weight: 500; color: #111827; }
+        .payment-icon { font-size: 1rem; }
+        .card-icons { display: flex; align-items: center; gap: 0.5rem; font-size: 0.75rem; color: #6b7280; }
+        .payment-description { font-size: 0.75rem; color: #6b7280; }
+        .card-form, .vodafone-form { margin-top: 1rem; padding: 1rem; background-color: #f9fafb; border-radius: 4px; border: 1px solid #e5e7eb; }
+        .submit-btn { width: 100%; background-color: #111827; color: white; border: none; padding: 1rem 2rem; font-size: 0.875rem; font-weight: 500; border-radius: 4px; cursor: pointer; transition: background-color 0.2s; margin-top: 2rem; }
+        .submit-btn:hover { background-color: #1f2937; }
+        .submit-btn:disabled { background-color: #9ca3af; cursor: not-allowed; }
+        @media (max-width: 1024px) { .checkout-container { grid-template-columns: 1fr; gap: 2rem; } .order-summary { border-left: none; border-top: 1px solid #e5e7eb; padding-left: 0; padding-top: 2rem; order: -1; } .form-row { grid-template-columns: 1fr; } .form-triple { grid-template-columns: 1fr; } }
+        @media (max-width: 640px) { .checkout-container { padding: 1rem; } .order-summary { padding-left: 0; } }
+        .loading { opacity: 0.6; pointer-events: none; }
+        .form-error { border-color: #dc2626; }
+        .error-message { color: #dc2626; font-size: 0.75rem; margin-top: 0.25rem; }
+    </style>
+</head>
+<body>
+<header class="checkout-header">
+    <div class="header-container">
+        <div class="logo-text">Capp Egypt</div>
+        <div class="cart-icon">🛒</div>
+    </div>
+</header>
+<div class="checkout-container">
+    <div class="checkout-form">
+        <form id="checkout-form" th:action="@{/checkout/process}" method="post">
+            <div class="section">
+                <h2 class="section-title">Contact</h2>
+                <a href="/login" class="login-link">Log in</a>
+                <div class="form-group">
+                    <input type="email" id="email" name="email" class="form-input" placeholder="Email" th:value="${customer?.email}" required>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="newsletter" name="newsletter" class="checkbox" th:checked="${customer?.newsletter}">
+                    <label for="newsletter" class="checkbox-label">Email me with news and offers</label>
+                </div>
+            </div>
+            <div class="section">
+                <h2 class="section-title">Delivery</h2>
+                <div class="form-group">
+                    <select id="country" name="country" class="form-select" required>
+                        <option value="EG" th:selected="${address?.country == 'EG' or address?.country == null}">Egypt</option>
+                        <option value="SA" th:selected="${address?.country == 'SA'}">Saudi Arabia</option>
+                        <option value="AE" th:selected="${address?.country == 'AE'}">United Arab Emirates</option>
+                    </select>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <input type="text" id="firstName" name="firstName" class="form-input" placeholder="First name" th:value="${address?.firstName}" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" id="lastName" name="lastName" class="form-input" placeholder="Last name" th:value="${address?.lastName}" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <input type="text" id="address" name="address" class="form-input" placeholder="Address" th:value="${address?.address}" required>
+                </div>
+                <div class="form-group">
+                    <input type="text" id="apartment" name="apartment" class="form-input" placeholder="Apartment, suite, etc. (optional)" th:value="${address?.apartment}">
+                </div>
+                <div class="form-triple">
+                    <div class="form-group">
+                        <input type="text" id="city" name="city" class="form-input" placeholder="City" th:value="${address?.city}" required>
+                    </div>
+                    <div class="form-group">
+                        <select id="governorate" name="governorate" class="form-select" th:field="*{governorate}" required>
+                            <option value="">Governorate</option>
+                            <option th:each="gov : ${governorates}"
+                                    th:value="${gov.id}"
+                                    th:selected="${gov.id}"
+                                    th:text="${gov.name}"
+                                    th:attr="data-price=${gov.deliveryPrice}">
+                            </option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" id="postalCode" name="postalCode" class="form-input" placeholder="Postal code (optional)" th:value="${address?.postalCode}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <input type="tel" id="phone" name="phone" class="form-input" placeholder="Phone" th:value="${address?.phone}" required>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="saveInfo" name="saveInfo" class="checkbox" th:checked="${address?.saveInfo}">
+                    <label for="saveInfo" class="checkbox-label">Save this information for next time</label>
+                </div>
+            </div>
+            <div class="section">
+                <h2 class="section-title">Payment</h2>
+                <div class="payment-methods">
+                    <div class="payment-option">
+                        <input type="radio" id="cod" name="paymentMethod" value="cod" class="payment-radio" th:checked="${paymentMethod == 'cod' or paymentMethod == null}" required>
+                        <label for="cod" class="payment-label">
+                            <div class="payment-header"><span class="payment-title">Cash on delivery (COD)</span><span class="payment-icon">💵</span></div>
+                            <div class="payment-description">Pay with cash upon delivery</div>
+                        </label>
+                    </div>
+                    <div class="payment-option">
+                        <input type="radio" id="card" name="paymentMethod" value="card" class="payment-radio" th:checked="${paymentMethod == 'card'}">
+                        <label for="card" class="payment-label">
+                            <div class="payment-header"><span class="payment-title">Credit card</span><div class="card-icons"><span>💳</span><span>VISA</span><span>MC</span></div></div>
+                            <div class="payment-description">Pay securely with your credit card</div>
+                        </label>
+                    </div>
+                    <div class="payment-option">
+                        <input type="radio" id="bank" name="paymentMethod" value="bank" class="payment-radio" th:checked="${paymentMethod == 'bank'}">
+                        <label for="bank" class="payment-label">
+                            <div class="payment-header"><span class="payment-title">Bank transfer</span><span class="payment-icon">🏦</span></div>
+                            <div class="payment-description">Transfer money directly from your bank</div>
+                        </label>
+                    </div>
+                    <div class="payment-option">
+                        <input type="radio" id="vodafone" name="paymentMethod" value="vodafone" class="payment-radio" th:checked="${paymentMethod == 'vodafone'}">
+                        <label for="vodafone" class="payment-label">
+                            <div class="payment-header"><span class="payment-title">Vodafone Cash</span><span class="payment-icon" style="color: #e60000;">📱</span></div>
+                            <div class="payment-description">Pay using Vodafone Cash mobile wallet</div>
+                        </label>
+                    </div>
+                </div>
+                <div id="card-form" class="card-form" style="display: none;">
+                    <div class="form-group"><input type="text" id="cardNumber" name="cardNumber" class="form-input" placeholder="Card number" maxlength="19"></div>
+                    <div class="form-row">
+                        <div class="form-group"><input type="text" id="expiryDate" name="expiryDate" class="form-input" placeholder="MM / YY" maxlength="7"></div>
+                        <div class="form-group"><input type="text" id="cvv" name="cvv" class="form-input" placeholder="CVV" maxlength="4"></div>
+                    </div>
+                    <div class="form-group"><input type="text" id="cardName" name="cardName" class="form-input" placeholder="Name on card"></div>
+                </div>
+                <div id="vodafone-form" class="vodafone-form" style="display: none;">
+                    <div class="form-group"><input type="tel" id="vodafoneNumber" name="vodafoneNumber" class="form-input" placeholder="Vodafone Cash number" pattern="[0-9+\-\s]*"></div>
+                </div>
+            </div>
+            <button type="submit" class="submit-btn" id="submit-btn">Complete order</button>
+        </form>
+    </div>
+    <div class="order-summary">
+        <div th:if="${#lists.isEmpty(cart)}" class="order-item">
+            <div class="item-details">
+                <div class="item-name">Your cart is empty.</div>
+            </div>
+        </div>
+        <div th:each="item : ${cart}" class="order-item">
+            <div class="item-image-container">
+                <img th:src="@{'/' + ${item.product.image}}" th:alt="${item.product.name}" class="item-image" onerror="this.src='/placeholder.svg'">
+                <div class="quantity-badge" th:text="${item.quantity}">1</div>
+            </div>
+            <div class="item-details">
+                <div class="item-name" th:text="${item.product.name}">Product Name</div>
+            </div>
+            <div class="item-price" th:text="${'E£' + #numbers.formatDecimal(item.product.price * item.quantity, 1, 2)}">E£0.00</div>
+        </div>
+        <div class="order-totals" th:if="${not #lists.isEmpty(cart)}">
+            <div class="total-row"><span class="total-label">Subtotal</span><span class="total-amount" th:text="${'E£' + #numbers.formatDecimal(subtotal, 1, 2)}">E£0.00</span></div>
+            <div class="total-row"><span id="delivery-price" class="total-label">Shipping</span><span id="shipping-amount" class="total-amount">E£0.00</span></div>
+            <div class="total-row final-total"><span class="total-label">Total</span><span class="total-amount"><span class="currency-label">EGP</span><span id="total-amount">E£0.00</span></span></div>
+        </div>
+    </div>
+</div>
+<script th:inline="javascript">
+
+    (function(){
+        const select = document.getElementById('governorate');
+        const shipEl = document.getElementById('shipping-amount');
+        const subtotalEl = document.querySelector('.order-totals .total-row:first-child .total-amount');
+        const totalEl = document.querySelector('.order-totals .final-total .total-amount span:last-child');
+        const fmt = n => 'E£' + Number(n).toFixed(2);
+        const num = t => parseFloat(String(t).replace(/[^\d.]/g,'')) || 0;
+        function selectedPrice(){
+            if(!select) return 0;
+            const opt = select.options[select.selectedIndex];
+            if(!opt) return 0;
+            const v = parseFloat(opt.getAttribute('data-price'));
+            return isNaN(v) ? 0 : v;
+        }
+        function pickFirstValid(){
+            if(!select) return;
+            if(select.value) return;
+            for(let i=0;i<select.options.length;i++){
+                const o = select.options[i];
+                if(o.value && o.hasAttribute('data-price')){ select.value = o.value; break; }
+            }
+        }
+        function update(){
+            pickFirstValid();
+            const price = selectedPrice();
+            if(shipEl) shipEl.textContent = fmt(price);
+            if(subtotalEl && totalEl){ totalEl.textContent = fmt(num(subtotalEl.textContent) + price); }
+        }
+        select && select.addEventListener('change', update);
+        document.addEventListener('DOMContentLoaded', update);
+        update();
+    })();
+
+    let token = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+    let header = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
+    document.getElementById('checkout-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const submitBtn = document.getElementById('submit-btn');
+        const form = e.target;
+        const requiredFields = form.querySelectorAll('[required]');
+        let isValid = true;
+        requiredFields.forEach(field => {
+            if (!field.value.trim()) { field.classList.add('form-error'); isValid = false; }
+            else { field.classList.remove('form-error'); }
+        });
+        if (!isValid) { showNotification('Please fill in all required fields.', 'error'); return; }
+        submitBtn.disabled = true; submitBtn.textContent = 'Processing...'; form.classList.add('loading');
+        const formData = new FormData(form);
+        fetch(form.action, { method: 'POST', headers: { [header]: token }, body: formData })
+            .then(response => {
+                if (response.ok) {
+                    const productId = /*[[${product.id}]]*/ 0;
+                    const quantity = /*[[${quantity}]]*/ 1;
+                    window.location.href = '/order/'+productId+'/'+quantity;
+                } else { throw new Error('Order processing failed'); }
+            })
+            .catch(() => {
+                showNotification('Failed to process order. Please try again.', 'error');
+                submitBtn.disabled = false; submitBtn.textContent = 'Complete order'; form.classList.remove('loading');
+            });
+    });
+
+    document.getElementById('phone').addEventListener('input', function(e) {
+        let value = e.target.value.replace(/\D/g, '');
+        if (value.startsWith('20')) { value = '+' + value; }
+        else if (value.startsWith('01') && value.length === 11) { value = '+20' + value; }
+        e.target.value = value;
+    });
+
+    document.querySelectorAll('.form-input, .form-select').forEach(field => {
+        field.addEventListener('blur', function() {
+            if (this.hasAttribute('required') && !this.value.trim()) { this.classList.add('form-error'); }
+            else { this.classList.remove('form-error'); }
+        });
+    });
+
+    document.getElementById('email').addEventListener('blur', function() {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (this.value && !emailRegex.test(this.value)) { this.classList.add('form-error'); showNotification('Please enter a valid email address.', 'error'); }
+        else { this.classList.remove('form-error'); }
+    });
+
+    function showNotification(message, type = 'success') {
+        const notification = document.createElement('div');
+        notification.textContent = message;
+        notification.style.cssText = `position: fixed; top: 20px; right: 20px; padding: 12px 24px; border-radius: 4px; color: white; font-weight: 600; z-index: 1000; background-color: ${type === 'error' ? '#dc2626' : '#059669'};`;
+        document.body.appendChild(notification);
+        setTimeout(() => { notification.remove(); }, 5000);
+    }
+
+    document.querySelectorAll('input[name="paymentMethod"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+            document.getElementById('card-form').style.display = 'none';
+            document.getElementById('vodafone-form').style.display = 'none';
+            if (this.value === 'card') {
+                document.getElementById('card-form').style.display = 'block';
+                document.getElementById('cardNumber').setAttribute('required', '');
+                document.getElementById('expiryDate').setAttribute('required', '');
+                document.getElementById('cvv').setAttribute('required', '');
+                document.getElementById('cardName').setAttribute('required', '');
+            } else if (this.value === 'vodafone') {
+                document.getElementById('vodafone-form').style.display = 'block';
+                document.getElementById('vodafoneNumber').setAttribute('required', '');
+            } else {
+                document.getElementById('cardNumber').removeAttribute('required');
+                document.getElementById('expiryDate').removeAttribute('required');
+                document.getElementById('cvv').removeAttribute('required');
+                document.getElementById('cardName').removeAttribute('required');
+                document.getElementById('vodafoneNumber').removeAttribute('required');
+            }
+        });
+    });
+
+    document.getElementById('cardNumber').addEventListener('input', function(e) {
+        let value = e.target.value.replace(/\D/g, '');
+        value = value.replace(/(\d{4})(?=\d)/g, '$1 ');
+        e.target.value = value;
+    });
+
+    document.getElementById('expiryDate').addEventListener('input', function(e) {
+        let value = e.target.value.replace(/\D/g, '');
+        if (value.length >= 2) { value = value.substring(0, 2) + ' / ' + value.substring(2, 4); }
+        e.target.value = value;
+    });
+
+    document.getElementById('cvv').addEventListener('input', function(e) {
+        e.target.value = e.target.value.replace(/\D/g, '');
+    });
+
+    document.getElementById('vodafoneNumber').addEventListener('input', function(e) {
+        let value = e.target.value.replace(/\D/g, '');
+        if (value.startsWith('01')) { value = '+20' + value; }
+        e.target.value = value;
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const selectedPayment = document.querySelector('input[name="paymentMethod"]:checked');
+        if (selectedPayment) { selectedPayment.dispatchEvent(new Event('change')); }
+        const firstEmptyField = document.querySelector('.form-input[required]:not([value])');
+        if (firstEmptyField) { firstEmptyField.focus(); }
+    });
+</script>
+</body>
+</html>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Shopping Cart – Capp Egypt</title>
+    <title>Your Shopping Cart – Sh3lan store</title>
     <style>
         /* CSS Reset and Base Styles */
         * {
@@ -523,7 +523,10 @@
 <header>
     <button class="menu-button" aria-label="Open menu">☰</button>
     <div class="logo-container">
-        <div class="logo-text">capp</div>
+<!--        <div class="logo-text">capp</div>-->
+        <a href="#" class="logo">
+            <img src="/uploads/sh3lanLogo.png" alt="Sh3lan logo" width="180" height="40">
+        </a>
     </div>
     <div class="header-icons">
         <button class="header-icon" aria-label="Search">🔍</button>
@@ -672,7 +675,12 @@
                 LE <span id="grand-total" th:text="${#numbers.formatDecimal(grandTotal, 1, 2)}">0.00</span> EGP
             </p>
             <p class="tax-note">Taxes, discounts and shipping calculated at checkout.</p>
-            <button class="checkout-button">Check out</button>
+            <button id="checkout-button" class="checkout-button">Check out</button>
+            <script>
+                document.getElementById('checkout-button').addEventListener('click', function() {
+                    window.location.href = '/checkout';
+                });
+            </script>
         </section>
 
         <section class="email-subscription">
