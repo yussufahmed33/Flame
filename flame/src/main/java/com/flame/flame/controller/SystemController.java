@@ -232,8 +232,8 @@ public String processOrder(@PathVariable int productId,
          //UserModel userModel = userService.getUserWithProducts(user.getId());
        //  model.addAttribute("user",userModel);
 
-            UserModel user = userService.getUserWithProducts(userModel);
-            model.addAttribute("user", user);
+           // UserModel user = userService.getUserWithProducts(userModel);
+          //  model.addAttribute("user", user);
        model.addAttribute("cart",cart);
         model.addAttribute("governorate",governorateService.getAllGovernorates());
         model.addAttribute("governorates",governorateService.getAllGovernorates());
