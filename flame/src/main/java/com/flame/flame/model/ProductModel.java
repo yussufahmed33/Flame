@@ -25,7 +25,7 @@ private String category;
     @ManyToOne
     @JoinColumn(name = "user_id")
     private UserModel user;
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL,fetch = FetchType.EAGER)
    // @Nullable
     private List<ProductImage> images;
 

@@ -31,4 +31,6 @@ public class UserModel {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.LAZY)
     private Set<ProductModel> products = new HashSet<>();
 
+    //private Set<ProductModel> products = new HashSet<>();
+
 }
