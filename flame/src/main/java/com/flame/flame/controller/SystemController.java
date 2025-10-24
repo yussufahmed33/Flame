@@ -220,7 +220,7 @@ public String processOrder(@PathVariable int productId,
 
     @GetMapping("/checkout")
     public String checkOut(Model model ,HttpSession session ,Principal principal){
-        UserModel userModel = userRepository.findByUsername(principal.getName());
+        //UserModel userModel = userRepository.findByUsername(principal.getName());
         List<CartItem> cart = cartService.getCart(session);
 //        System.out.println(cart);
         for(CartItem cartItem : cart){
