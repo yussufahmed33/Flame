@@ -27,8 +27,7 @@ private String category;
     @JoinColumn(name = "user_id")
     @JsonIgnore
     private UserModel user;
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL,fetch = FetchType.EAGER)
-   // @Nullable
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ProductImage> images;
 
 //    public void addImage(ProductImage image) {
