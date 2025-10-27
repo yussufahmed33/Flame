@@ -70,6 +70,7 @@ public class SystemController {
         model.addAttribute("products",userService.index());
         return "index";
     }
+    @Transactional
     @GetMapping("/product/{id}")
     public String getProductDetails(@PathVariable int id, Model model,HttpSession session) {
         ProductModel product = productRepository.findById(id).orElseThrow(() -> new RuntimeException("Product not found"));
