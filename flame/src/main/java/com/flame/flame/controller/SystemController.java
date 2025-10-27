@@ -65,11 +65,13 @@ public class SystemController {
     }
 
 
+    @Transactional
     @GetMapping("/")
     public String index(Model model){
         model.addAttribute("products",userService.index());
         return "index";
     }
+    @Transactional
     @GetMapping("/product/{id}")
     public String getProductDetails(@PathVariable int id, Model model,HttpSession session) {
         ProductModel product = productRepository.findById(id).orElseThrow(() -> new RuntimeException("Product not found"));
@@ -118,6 +120,7 @@ public class SystemController {
 //        return "product-details";
 //}
 
+@Transactional
 @GetMapping("/buynow/{id}/{qty}")
     public String checkOut(@PathVariable int id ,Model model ,HttpSession session ,Principal principal,@PathVariable int qty){
         List<CartItem> cart = cartService.getCart(session);
@@ -193,6 +196,7 @@ public String processOrder(@PathVariable int productId,
 //        return 85.0;
 //    }
     //@ResponseBody
+    @Transactional
     @GetMapping("/myorders")
     public String getsessionorder(OrderModel orderModel,HttpSession session,Model model,Principal principal){
         List<OrderModel> orders = new ArrayList<>();
