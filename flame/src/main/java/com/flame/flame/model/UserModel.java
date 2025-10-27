@@ -5,11 +5,14 @@ import lombok.Data;
 
 import java.util.HashSet;
 import java.util.Set;
-
+import lombok.ToString;
 @Entity
 @Table(name = "users")
 @Data
+@ToString(exclude = {"roles", "products"})
+
 public class UserModel {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;

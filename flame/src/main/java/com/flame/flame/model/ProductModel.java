@@ -4,7 +4,7 @@ import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.Data;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
+import lombok.ToString;
 import java.util.HashSet;
 import java.util.List;
 //import java.util.Set;
@@ -12,6 +12,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity
 @Table(name = "products")
 @Data
+@ToString(exclude = {"images"})
 public class ProductModel {
 @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
