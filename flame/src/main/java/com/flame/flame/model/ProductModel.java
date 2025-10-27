@@ -3,6 +3,7 @@ package com.flame.flame.model;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.HashSet;
 import java.util.List;
@@ -24,6 +25,7 @@ private int quantity;
 private String category;
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonIgnore
     private UserModel user;
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
    // @Nullable
