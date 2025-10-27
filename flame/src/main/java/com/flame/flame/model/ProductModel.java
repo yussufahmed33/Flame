@@ -7,8 +7,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-
+//import java.util.Set;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity
 @Table(name = "products")
 @Data
@@ -27,7 +27,7 @@ private String category;
     @JoinColumn(name = "user_id")
     @JsonIgnore
     private UserModel user;
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL,fetch = FetchType.EAGER)
    // @Nullable
     private List<ProductImage> images;
 

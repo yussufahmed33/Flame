@@ -9,6 +9,7 @@ import com.flame.flame.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.List;
@@ -24,6 +25,26 @@ public class UserService {
     BCryptPasswordEncoder passwordEncoder;
     @Autowired
     ProductRepository productRepository;
+
+    @Transactional
+    public UserModel getUserWithProducts(Integer userId) {
+        UserModel user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // إجبار تحميل مجموعة المنتجات ضمن الجلسة المفتوحة
+        user.getProducts().size();
+
+        return user;
+    }
+
+    @Transactional
+    public UserModel getUserWithProducts(int userId) {
+        UserModel user = userRepository.findByIdWithProducts(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        user.getProducts().size(); // إجبار التحميل داخل الجلسة
+        return user;
+    }
+
     public void register(UserModel user,int roleId){
         String hashedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(hashedPassword);

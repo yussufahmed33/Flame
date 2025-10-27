@@ -222,16 +222,23 @@ public String processOrder(@PathVariable int productId,
         System.out.println(orders);
         return "myorders";
     }
-
     @Transactional
     @GetMapping("/checkout")
     public String checkOut(Model model ,HttpSession session ,Principal principal){
+        //UserModel userModel = userRepository.findByUsername(principal.getName());
         List<CartItem> cart = cartService.getCart(session);
 //        System.out.println(cart);
         for(CartItem cartItem : cart){
             System.out.println("|||||||");
             System.out.println(cartItem);
         }
+        //UserModel user =userRepository.findByUsername(principal.getName());
+
+         //UserModel userModel = userService.getUserWithProducts(user.getId());
+       //  model.addAttribute("user",userModel);
+
+           // UserModel user = userService.getUserWithProducts(userModel);
+          //  model.addAttribute("user", user);
        model.addAttribute("cart",cart);
         model.addAttribute("governorate",governorateService.getAllGovernorates());
         model.addAttribute("governorates",governorateService.getAllGovernorates());

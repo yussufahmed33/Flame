@@ -9,6 +9,7 @@ import com.flame.flame.repository.UserRepository;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
@@ -25,6 +26,7 @@ public class OrderService {
     ProductRepository productRepository;
     @Autowired
     OrderRepository orderRepository;
+    @Transactional
     public void createOrder(OrderModel orderModel, Principal principal, HttpSession session, Model model) {
         System.out.println("order in service");
         UserModel user = (principal != null) ? userRepository.findByUsername(principal.getName()) : null;
