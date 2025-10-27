@@ -18,6 +18,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -217,7 +218,7 @@ public String processOrder(@PathVariable int productId,
         System.out.println(orders);
         return "myorders";
     }
-
+    @Transactional
     @GetMapping("/checkout")
     public String checkOut(Model model ,HttpSession session ,Principal principal){
         //UserModel userModel = userRepository.findByUsername(principal.getName());

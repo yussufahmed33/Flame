@@ -6,8 +6,8 @@ import lombok.Data;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-
+//import java.util.Set;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity
 @Table(name = "products")
 @Data
@@ -24,6 +24,7 @@ private int quantity;
 private String category;
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonIgnore
     private UserModel user;
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL,fetch = FetchType.EAGER)
    // @Nullable
