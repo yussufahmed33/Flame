@@ -5,11 +5,14 @@ import lombok.Data;
 
 import java.util.HashSet;
 import java.util.Set;
-
+import lombok.ToString;
 @Entity
 @Table(name = "users")
 @Data
+@ToString(exclude = {"roles", "products"})
+
 public class UserModel {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -21,14 +24,14 @@ public class UserModel {
     private String phone;
     private String address;
     //private String role;
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "user_role",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private Set<Roles> roles = new HashSet<>();
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.LAZY)
     private Set<ProductModel> products = new HashSet<>();
 
     //private Set<ProductModel> products = new HashSet<>();
